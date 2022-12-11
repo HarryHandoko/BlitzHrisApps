@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:blitz_hris/View/Auth/ResetPassword.dart';
+import 'package:blitz_hris/View/Page/Home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,7 +24,14 @@ class _LoginState extends State<Login> {
 
   void httpJob(AnimationController controller) async {
     controller.forward();
-    await Future.delayed(Duration(seconds: 5), () {});
+    await Future.delayed(Duration(seconds: 5), () {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => Home(),
+          ),
+          (Route<dynamic> route) => false);
+    });
     controller.reset();
   }
 
@@ -192,6 +200,7 @@ class _LoginState extends State<Login> {
                                   onPressed:
                                       (AnimationController controller) async {
                                     httpJob(controller);
+                                    auth();
                                     setState(() {
                                       loading = !loading;
                                     });
@@ -273,3 +282,5 @@ class _LoginState extends State<Login> {
 bool canSubmit = false;
 TextEditingController email = TextEditingController();
 TextEditingController katasandi = TextEditingController();
+
+void auth() {}

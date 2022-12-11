@@ -23,6 +23,7 @@ dependencies:
   progress_indicator_button: ^0.0.3
   font_awesome_flutter: ^10.3.0
   flutter_launcher_icons: "^0.11.0"
+  circular_profile_avatar: ^2.0.5
 
 dev_dependencies:
   flutter_test:

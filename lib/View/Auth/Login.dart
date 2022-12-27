@@ -309,6 +309,9 @@ class _LoginState extends State<Login> {
         final preff1 = await SharedPreferences.getInstance();
         await preff1.setString('token', token);
         await Future.delayed(Duration(seconds: 3), () {
+          setState(() {
+            _isLoading = false;
+          });
           Navigator.of(context).push(
             PageRouteBuilder(
               pageBuilder: (BuildContext context, Animation<double> animation,

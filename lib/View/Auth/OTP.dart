@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:blitz_hris/Config/Api.dart';
@@ -16,6 +17,8 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:sweetalert/sweetalert.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/style.dart';
+import 'package:timer_count_down/timer_controller.dart';
+import 'package:timer_count_down/timer_count_down.dart';
 
 class OTP extends StatefulWidget {
   @override
@@ -34,9 +37,13 @@ class _OTPState extends State<OTP> {
 
   bool loading = false;
   bool _isLoading = false;
+  int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 30;
+  bool resend = false;
 
   @override
   Widget build(BuildContext context) {
+    final CountdownController _controller =
+        new CountdownController(autoStart: true);
     return Material(
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: const SystemUiOverlayStyle(
@@ -105,6 +112,62 @@ class _OTPState extends State<OTP> {
                               });
                             },
                           ),
+                          Container(
+                            margin: EdgeInsets.only(top: 20),
+                            child: Row(
+                              children: [
+                                resend
+                                    ? GestureDetector(
+                                        onTap: () {
+                                          _controller.start();
+                                        },
+                                        child: Container(
+                                          margin: EdgeInsets.only(right: 10),
+                                          child: Text(
+                                            'Kirim Ulang OTP',
+                                            style: TextStyle(
+                                              fontFamily: 'poppins',
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    : GestureDetector(
+                                        onTap: () {},
+                                        child: Container(
+                                          margin: EdgeInsets.only(right: 10),
+                                          child: Text(
+                                            'Kirim Ulang OTP',
+                                            style: TextStyle(
+                                              fontFamily: 'poppins',
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                Container(
+                                  child: Countdown(
+                                    controller: _controller,
+                                    seconds: 5,
+                                    build: (_, time) => Text(
+                                      '00 : ' + time.toInt().toString(),
+                                      style: TextStyle(
+                                          fontFamily: 'poppins',
+                                          fontWeight: FontWeight.normal),
+                                    ),
+                                    interval: Duration(seconds: 1),
+                                    onFinished: () {
+                                      setState(() {
+                                        resend = true;
+                                      });
+                                    },
+                                  ),
+                                )
+                              ],
+                            ),
+                          )
                         ],
                       ),
                     ),

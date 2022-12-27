@@ -1,8 +1,11 @@
 import 'dart:async';
 
+import 'package:blitz_hris/View/Auth/Auth.dart';
 import 'package:blitz_hris/View/Auth/Login.dart';
+import 'package:blitz_hris/View/Router/Navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(MyApp());
@@ -29,15 +32,32 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   @override
+  Future getName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      if (prefs.getString('name') != null) {
+        Timer(
+          Duration(seconds: 3),
+          () => Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => Navigation()),
+          ),
+        );
+      } else {
+        Timer(
+          Duration(seconds: 3),
+          () => Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => Auth()),
+          ),
+        );
+      }
+    });
+  }
+
   void initState() {
     super.initState();
-    Timer(
-      Duration(seconds: 3),
-      () => Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => Login()),
-      ),
-    );
+    getName();
   }
 
   @override

@@ -2,14 +2,20 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:blitz_hris/Config/Api.dart';
+import 'package:blitz_hris/View/Auth/OTP.dart';
 import 'package:blitz_hris/View/Auth/ResetPassword.dart';
 import 'package:blitz_hris/View/Page/Home.dart';
+import 'package:blitz_hris/View/Router/Navigation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
-
+import 'package:http/http.dart' as http;
 import 'package:progress_indicator_button/progress_button.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:sweetalert/sweetalert.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -24,19 +30,12 @@ class _LoginState extends State<Login> {
 
   void httpJob(AnimationController controller) async {
     controller.forward();
-    await Future.delayed(Duration(seconds: 5), () {
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) => Home(),
-          ),
-          (Route<dynamic> route) => false);
-    });
     controller.reset();
   }
 
   bool loading = false;
   bool _isObscure = true;
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -199,7 +198,7 @@ class _LoginState extends State<Login> {
                                   color: Color.fromRGBO(0, 186, 242, 1),
                                   onPressed:
                                       (AnimationController controller) async {
-                                    httpJob(controller);
+                                    _isLoading = true;
                                     auth();
                                     setState(() {
                                       loading = !loading;
@@ -242,13 +241,15 @@ class _LoginState extends State<Login> {
 
                         GestureDetector(
                           onTap: () {
-                            Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      ResetPass(),
-                                ),
-                                (Route<dynamic> route) => false);
+                            Navigator.of(context).push(
+                              PageRouteBuilder(
+                                pageBuilder: (BuildContext context,
+                                    Animation<double> animation,
+                                    Animation<double> secondaryAnimation) {
+                                  return ResetPass();
+                                },
+                              ),
+                            );
                           },
                           child: Container(
                             padding: EdgeInsets.all(3),
@@ -272,15 +273,112 @@ class _LoginState extends State<Login> {
                 ),
               ),
             ),
+            if (_isLoading)
+              const Opacity(
+                opacity: 0.8,
+                child: ModalBarrier(dismissible: false, color: Colors.black),
+              ),
+            if (_isLoading)
+              const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.blue,
+                ),
+              ),
           ],
         ),
       ),
     );
   }
+
+  bool canSubmit = false;
+  TextEditingController email = TextEditingController();
+  TextEditingController katasandi = TextEditingController();
+
+  Future auth() async {
+    try {
+      String myUrl = KEY.BASE_URL + "v1/login";
+      var result = await http.post(Uri.parse(myUrl), headers: {
+        'Accept': 'application/json',
+      }, body: {
+        "email": email.text,
+        "password": katasandi.text
+      });
+      var jsonObject = json.decode(result.body);
+      if (jsonObject['code'] == 200) {
+        var token = jsonObject['data']['secret_code'];
+        final preff1 = await SharedPreferences.getInstance();
+        await preff1.setString('token', token);
+        await Future.delayed(Duration(seconds: 3), () {
+          Navigator.of(context).push(
+            PageRouteBuilder(
+              pageBuilder: (BuildContext context, Animation<double> animation,
+                  Animation<double> secondaryAnimation) {
+                return OTP();
+              },
+            ),
+          );
+        });
+      } else {
+        if (katasandi.text == '') {
+          setState(() {
+            Alert(
+              context: context,
+              type: AlertType.error,
+              desc: "Password Tidak Boleh Kosong",
+              buttons: [
+                DialogButton(
+                  color: Colors.blue,
+                  child: Text(
+                    "OK",
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  onPressed: () => Navigator.pop(context),
+                  width: 120,
+                )
+              ],
+            ).show();
+            _isLoading = false;
+          });
+        } else {
+          setState(() {
+            _isLoading = false;
+            Alert(
+              context: context,
+              type: AlertType.error,
+              desc: "Email atau Password Anda tidak cocok",
+              buttons: [
+                DialogButton(
+                  color: Colors.blue,
+                  child: Text(
+                    "OK",
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  onPressed: () => Navigator.pop(context),
+                  width: 120,
+                )
+              ],
+            ).show();
+          });
+        }
+      }
+    } on SocketException catch (_) {
+      setState(() {
+        _isLoading = false;
+        SweetAlert.show(
+          context,
+          subtitle: "No Internet Connection!",
+          style: SweetAlertStyle.error,
+        );
+      });
+    } on TimeoutException {
+      setState(() {
+        _isLoading = false;
+        SweetAlert.show(
+          context,
+          subtitle: "Connection Timeout!",
+          style: SweetAlertStyle.error,
+        );
+      });
+    }
+  }
 }
-
-bool canSubmit = false;
-TextEditingController email = TextEditingController();
-TextEditingController katasandi = TextEditingController();
-
-void auth() {}

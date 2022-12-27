@@ -7,15 +7,39 @@ import 'package:flutter/services.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:progress_indicator_button/progress_button.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tellme_alert/tellme_alert.dart';
+import 'package:group_radio_button/group_radio_button.dart';
+import 'package:flutter/src/painting/_network_image_io.dart';
 
 class Home extends StatefulWidget {
   @override
   State<Home> createState() => _HomeState();
 }
 
+class GroupModel {
+  String text;
+  int index;
+  bool selected;
+
+  GroupModel({required this.text, required this.index, required this.selected});
+}
+
 class _HomeState extends State<Home> {
+  var name;
+  var avatar;
+
+  Future getProfile() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      name = prefs.getString('name');
+      avatar = prefs.getString('avatar');
+    });
+  }
+
   void initState() {
     super.initState();
+    getProfile();
   }
 
   void httpJob(AnimationController controller) async {
@@ -45,7 +69,8 @@ class _HomeState extends State<Home> {
                   // color: Colors.yellow,
                   child: SingleChildScrollView(
                     child: Container(
-                      margin: EdgeInsets.only(left: 20, right: 20, top: 60),
+                      margin: EdgeInsets.only(
+                          left: 20, right: 20, top: 60, bottom: 100),
                       child: Column(
                         children: [
                           Row(
@@ -60,8 +85,7 @@ class _HomeState extends State<Home> {
                                         flex: 2,
                                         child: CircularProfileAvatar(
                                           '',
-                                          child: Image.asset(
-                                              'assets/image/icon.png'),
+                                          child: Image.network(avatar!),
                                           borderColor:
                                               Color.fromRGBO(0, 186, 242, 1),
                                           borderWidth: 2,
@@ -95,7 +119,7 @@ class _HomeState extends State<Home> {
                                                   alignment:
                                                       Alignment.centerLeft,
                                                   child: Text(
-                                                    'Blitz Driver',
+                                                    name,
                                                     style: TextStyle(
                                                       fontFamily: 'poppins',
                                                       color: Color.fromRGBO(
@@ -172,10 +196,34 @@ class _HomeState extends State<Home> {
                                                 Color.fromRGBO(0, 186, 242, 1),
                                             onPressed: (AnimationController
                                                 controller) async {
-                                              httpJob(controller);
+                                              // httpJob(controller);
                                               setState(() {
                                                 loading = !loading;
                                               });
+                                              //Aligned
+                                              TellMeAlert(
+                                                context: context,
+                                                padding:
+                                                    const EdgeInsets.all(30),
+                                                child: Container(
+                                                  color: Colors.white,
+                                                  child: Container(
+                                                    padding: EdgeInsets.only(
+                                                        left: 14, right: 14),
+                                                    child: Column(
+                                                      children: [],
+                                                    ),
+                                                  ),
+                                                ),
+                                                borderRadius: 10,
+                                                showCancelButton: false,
+                                                showContent: false,
+                                                showConfirmButton: false,
+                                                showTitle: false,
+                                                showIcon: false,
+                                                onConfirm: () => print(
+                                                    "Custom widget confirmed"),
+                                              );
                                             },
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(12)),
@@ -227,6 +275,395 @@ class _HomeState extends State<Home> {
                                 ),
                               ],
                             ),
+                          ),
+                          //nav absensi
+                          Column(
+                            children: [
+                              Container(
+                                child: Container(
+                                  margin: EdgeInsets.only(top: 10),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 1,
+                                        child: Container(
+                                          height: 70,
+                                          decoration: BoxDecoration(
+                                            color:
+                                                Color.fromRGBO(0, 186, 255, 1),
+                                            borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(10),
+                                                bottomLeft:
+                                                    Radius.circular(10)),
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 2,
+                                        child: Container(
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                'Nov',
+                                                style: TextStyle(
+                                                  fontSize: 15,
+                                                  color: Colors.blue,
+                                                  fontFamily: 'poppins',
+                                                ),
+                                              ),
+                                              Text(
+                                                '23',
+                                                style: TextStyle(
+                                                  fontSize: 20,
+                                                  color: Colors.blue,
+                                                  fontFamily: 'poppins',
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 5,
+                                        child: Container(
+                                          child: Text(
+                                            'Senin, 06:30 - 15:00',
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black,
+                                              fontFamily: 'poppins',
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 2,
+                                        child: Container(
+                                          width: 1,
+                                          child: TextButton(
+                                            style: TextButton.styleFrom(
+                                              backgroundColor: Colors.blue,
+                                            ),
+                                            onPressed: null,
+                                            child: Text(
+                                              'Hadir',
+                                              style: TextStyle(
+                                                fontSize: 10,
+                                                fontFamily: 'poppins',
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 2,
+                                        child: Container(
+                                          child:
+                                              Icon(FeatherIcons.chevronRight),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(color: Colors.grey),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                child: Container(
+                                  margin: EdgeInsets.only(top: 10),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 1,
+                                        child: Container(
+                                          height: 70,
+                                          decoration: BoxDecoration(
+                                            color:
+                                                Color.fromRGBO(255, 38, 129, 1),
+                                            borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(10),
+                                                bottomLeft:
+                                                    Radius.circular(10)),
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 2,
+                                        child: Container(
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                'Nov',
+                                                style: TextStyle(
+                                                  fontSize: 15,
+                                                  color: Color.fromRGBO(
+                                                      255, 38, 129, 1),
+                                                  fontFamily: 'poppins',
+                                                ),
+                                              ),
+                                              Text(
+                                                '23',
+                                                style: TextStyle(
+                                                  fontSize: 20,
+                                                  color: Color.fromRGBO(
+                                                      255, 38, 129, 1),
+                                                  fontFamily: 'poppins',
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 5,
+                                        child: Container(
+                                          child: Text(
+                                            '-',
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black,
+                                              fontFamily: 'poppins',
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 3,
+                                        child: Container(
+                                          width: 1,
+                                          child: TextButton(
+                                            style: TextButton.styleFrom(
+                                              backgroundColor: Color.fromRGBO(
+                                                  255, 38, 129, 1),
+                                            ),
+                                            onPressed: null,
+                                            child: Text(
+                                              'Tidak Hadir',
+                                              style: TextStyle(
+                                                fontSize: 10,
+                                                fontFamily: 'poppins',
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Container(
+                                          child: Text(''),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(color: Colors.grey),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                child: Container(
+                                  margin: EdgeInsets.only(top: 10),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 1,
+                                        child: Container(
+                                          height: 70,
+                                          decoration: BoxDecoration(
+                                            color:
+                                                Color.fromRGBO(255, 183, 15, 1),
+                                            borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(10),
+                                                bottomLeft:
+                                                    Radius.circular(10)),
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 2,
+                                        child: Container(
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                'Nov',
+                                                style: TextStyle(
+                                                  fontSize: 15,
+                                                  color: Color.fromRGBO(
+                                                      255, 183, 15, 1),
+                                                  fontFamily: 'poppins',
+                                                ),
+                                              ),
+                                              Text(
+                                                '23',
+                                                style: TextStyle(
+                                                  fontSize: 20,
+                                                  color: Color.fromRGBO(
+                                                      255, 183, 15, 1),
+                                                  fontFamily: 'poppins',
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 5,
+                                        child: Container(
+                                          child: Text(
+                                            'Senin, 06:30 - 15:00',
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black,
+                                              fontFamily: 'poppins',
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 2,
+                                        child: Container(
+                                          width: 1,
+                                          child: TextButton(
+                                            style: TextButton.styleFrom(
+                                              backgroundColor: Color.fromRGBO(
+                                                  255, 183, 15, 1),
+                                            ),
+                                            onPressed: null,
+                                            child: Text(
+                                              'Sakit',
+                                              style: TextStyle(
+                                                fontSize: 10,
+                                                fontFamily: 'poppins',
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 2,
+                                        child: Container(
+                                          child:
+                                              Icon(FeatherIcons.chevronRight),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(color: Colors.grey),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                child: Container(
+                                  margin: EdgeInsets.only(top: 10),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 1,
+                                        child: Container(
+                                          height: 70,
+                                          decoration: BoxDecoration(
+                                            color:
+                                                Color.fromRGBO(255, 73, 15, 1),
+                                            borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(10),
+                                                bottomLeft:
+                                                    Radius.circular(10)),
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 2,
+                                        child: Container(
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                'Nov',
+                                                style: TextStyle(
+                                                  fontSize: 15,
+                                                  color: Color.fromRGBO(
+                                                      255, 73, 15, 1),
+                                                  fontFamily: 'poppins',
+                                                ),
+                                              ),
+                                              Text(
+                                                '23',
+                                                style: TextStyle(
+                                                  fontSize: 20,
+                                                  color: Color.fromRGBO(
+                                                      255, 73, 15, 1),
+                                                  fontFamily: 'poppins',
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 5,
+                                        child: Container(
+                                          child: Text(
+                                            'Senin, 06:30 - 15:00',
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black,
+                                              fontFamily: 'poppins',
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 2,
+                                        child: Container(
+                                          width: 1,
+                                          child: TextButton(
+                                            style: TextButton.styleFrom(
+                                              backgroundColor: Color.fromRGBO(
+                                                  255, 73, 15, 1),
+                                            ),
+                                            onPressed: null,
+                                            child: Text(
+                                              'Ijin',
+                                              style: TextStyle(
+                                                fontSize: 10,
+                                                fontFamily: 'poppins',
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 2,
+                                        child: Container(
+                                          child:
+                                              Icon(FeatherIcons.chevronRight),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(color: Colors.grey),
+                                  ),
+                                ),
+                              ),
+                            ],
                           )
                         ],
                       ),

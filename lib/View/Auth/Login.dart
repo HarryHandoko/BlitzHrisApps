@@ -308,6 +308,8 @@ class _LoginState extends State<Login> {
         var token = jsonObject['data']['secret_code'];
         final preff1 = await SharedPreferences.getInstance();
         await preff1.setString('token', token);
+        await preff1.setString('email', email.text);
+        await preff1.setString('katasandi', katasandi.text);
         await Future.delayed(Duration(seconds: 3), () {
           setState(() {
             _isLoading = false;

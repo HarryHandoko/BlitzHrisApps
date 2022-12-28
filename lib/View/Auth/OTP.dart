@@ -40,10 +40,11 @@ class _OTPState extends State<OTP> {
   int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 30;
   bool resend = false;
 
+  final CountdownController _controllers =
+      new CountdownController(autoStart: true);
+
   @override
   Widget build(BuildContext context) {
-    final CountdownController _controller =
-        new CountdownController(autoStart: true);
     return Material(
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: const SystemUiOverlayStyle(
@@ -118,8 +119,25 @@ class _OTPState extends State<OTP> {
                               children: [
                                 resend
                                     ? GestureDetector(
-                                        onTap: () {
-                                          _controller.start();
+                                        onTap: () async {
+                                          setState(() {
+                                            _isLoading = true;
+                                            resend = false;
+
+                                            _controllers.restart();
+                                          });
+                                          SharedPreferences prefs =
+                                              await SharedPreferences
+                                                  .getInstance();
+                                          if (prefs.getString('mobile') !=
+                                              null) {
+                                            auth();
+                                          } else if (prefs.getString('email') !=
+                                                  null &&
+                                              prefs.getString('katasandi') !=
+                                                  null) {
+                                            authv2();
+                                          }
                                         },
                                         child: Container(
                                           margin: EdgeInsets.only(right: 10),
@@ -149,8 +167,8 @@ class _OTPState extends State<OTP> {
                                       ),
                                 Container(
                                   child: Countdown(
-                                    controller: _controller,
-                                    seconds: 5,
+                                    controller: _controllers,
+                                    seconds: 59,
                                     build: (_, time) => Text(
                                       '00 : ' + time.toInt().toString(),
                                       style: TextStyle(
@@ -207,6 +225,7 @@ class _OTPState extends State<OTP> {
         final preff1 = await SharedPreferences.getInstance();
         await preff1.setString('name', jsonObject['data']['name']);
         await preff1.setString('avatar', jsonObject['data']['avatar']);
+        await preff1.setString('token', jsonObject['data']['token']);
         await Future.delayed(Duration(seconds: 3), () {
           Navigator.pushAndRemoveUntil(
               context,
@@ -222,6 +241,136 @@ class _OTPState extends State<OTP> {
             context: context,
             type: AlertType.error,
             desc: "OTP yang anda masukan salah, silahkan cek kembali!",
+            buttons: [
+              DialogButton(
+                color: Colors.blue,
+                child: Text(
+                  "OK",
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+                onPressed: () => Navigator.pop(context),
+                width: 120,
+              )
+            ],
+          ).show();
+        });
+      }
+    } on SocketException catch (_) {
+      setState(() {
+        _isLoading = false;
+        SweetAlert.show(
+          context,
+          subtitle: "No Internet Connection!",
+          style: SweetAlertStyle.error,
+        );
+      });
+    } on TimeoutException {
+      setState(() {
+        _isLoading = false;
+        SweetAlert.show(
+          context,
+          subtitle: "Connection Timeout!",
+          style: SweetAlertStyle.error,
+        );
+      });
+    }
+  }
+
+  //with WA
+  Future auth() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      String myUrl = KEY.BASE_URL + "v1/login-mobile";
+      var result = await http.post(Uri.parse(myUrl), headers: {
+        'Accept': 'application/json',
+      }, body: {
+        "mobile_phone": prefs.getString('mobile')!,
+      });
+      var jsonObject = json.decode(result.body);
+      if (jsonObject['code'] == 200) {
+        var token = jsonObject['data']['secret_code'];
+        var mobile = prefs.getString('mobile')!;
+        final preff1 = await SharedPreferences.getInstance();
+        await preff1.setString('token', token);
+        await preff1.setString('mobile', mobile);
+        await Future.delayed(Duration(seconds: 3), () {
+          setState(() {
+            _isLoading = false;
+          });
+        });
+      } else {
+        setState(() {
+          _isLoading = false;
+          Alert(
+            context: context,
+            type: AlertType.error,
+            desc: "Nomor handphone Anda tidak terdaftar",
+            buttons: [
+              DialogButton(
+                color: Colors.blue,
+                child: Text(
+                  "OK",
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+                onPressed: () => Navigator.pop(context),
+                width: 120,
+              )
+            ],
+          ).show();
+        });
+      }
+    } on SocketException catch (_) {
+      setState(() {
+        _isLoading = false;
+        SweetAlert.show(
+          context,
+          subtitle: "No Internet Connection!",
+          style: SweetAlertStyle.error,
+        );
+      });
+    } on TimeoutException {
+      setState(() {
+        _isLoading = false;
+        SweetAlert.show(
+          context,
+          subtitle: "Connection Timeout!",
+          style: SweetAlertStyle.error,
+        );
+      });
+    }
+  }
+
+  //logWithEMAIL
+
+  Future authv2() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      String myUrl = KEY.BASE_URL + "v1/login";
+      var result = await http.post(Uri.parse(myUrl), headers: {
+        'Accept': 'application/json',
+      }, body: {
+        "email": prefs.getString('email')!,
+        "password": prefs.getString('katasandi')!
+      });
+      var jsonObject = json.decode(result.body);
+      if (jsonObject['code'] == 200) {
+        var token = jsonObject['data']['secret_code'];
+        final preff1 = await SharedPreferences.getInstance();
+        await preff1.setString('token', token);
+        await preff1.setString('email', prefs.getString('email')!);
+        await preff1.setString('katasandi', prefs.getString('katasandi')!);
+        await Future.delayed(Duration(seconds: 3), () {
+          setState(() {
+            _isLoading = false;
+          });
+        });
+      } else {
+        setState(() {
+          _isLoading = false;
+          Alert(
+            context: context,
+            type: AlertType.error,
+            desc: "Email atau Password Anda tidak cocok",
             buttons: [
               DialogButton(
                 color: Colors.blue,

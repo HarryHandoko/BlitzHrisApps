@@ -228,8 +228,10 @@ class _LogWithWAState extends State<LogWithWA> {
       var jsonObject = json.decode(result.body);
       if (jsonObject['code'] == 200) {
         var token = jsonObject['data']['secret_code'];
+        var mobile = mobile_phone.text;
         final preff1 = await SharedPreferences.getInstance();
         await preff1.setString('token', token);
+        await preff1.setString('mobile', mobile);
         await Future.delayed(Duration(seconds: 3), () {
           setState(() {
             _isLoading = false;

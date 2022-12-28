@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:blitz_hris/View/Page/Home.dart';
+import 'package:blitz_hris/View/Page/Profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
@@ -26,13 +28,10 @@ class _NavigationState extends State<Navigation> {
       _selectedIndex = index;
       if (_selectedIndex == 0) {
         currentScreen = Home();
-        print(index);
       } else if (_selectedIndex == 1) {
         currentScreen = Home();
-        print(index);
       } else if (_selectedIndex == 2) {
-        currentScreen = Home();
-        print(index);
+        currentScreen = Profile();
       }
     });
   }

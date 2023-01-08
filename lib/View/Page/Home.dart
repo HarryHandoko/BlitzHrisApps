@@ -15,6 +15,7 @@ import 'package:group_radio_button/group_radio_button.dart';
 import 'package:flutter/src/painting/_network_image_io.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 import '../../Config/Api.dart';
 import '../Auth/Auth.dart';
@@ -32,8 +33,30 @@ class _HomeState extends State<Home> {
   String? name;
   String? avatar;
   String? token;
+  String? presence;
+  var dt = DateTime.now();
+  var tanggal = DateFormat("EEEEE, dd MMMM yyyy").format(DateTime.now());
   bool loading_s = false;
   att? _att = att.hadir;
+
+  var presenceData;
+  var presenceDatas;
+  Future getAbsen() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var response = await http
+        .get(Uri.parse(Uri.encodeFull(KEY.BASE_URL + 'v1/shift')), headers: {
+      "Accept": "application/json",
+      "Authorization": "Bearer ${prefs.getString('token')}",
+    });
+
+    setState(() {
+      var jsosn = json.decode(response.body);
+      presenceData = json.decode(response.body)['data']['employee_in'];
+      presenceDatas = json.decode(response.body)['data'];
+    });
+
+    return "Success";
+  }
 
   Future getProfile() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -41,6 +64,7 @@ class _HomeState extends State<Home> {
       name = prefs.getString('name');
       avatar = prefs.getString('avatar');
       token = prefs.getString('token');
+      presence = prefs.getString('presence');
     });
   }
 
@@ -63,27 +87,29 @@ class _HomeState extends State<Home> {
 
   void initState() {
     super.initState();
-    getProfile().whenComplete(() {
-      getVerifToken().whenComplete(() {
-        setState(() {
-          if (verif == '200') {
-            loading_s = true;
-          } else {
-            setState(() async {
-              SharedPreferences prefs = await SharedPreferences.getInstance();
-              prefs.remove('name');
-              prefs.remove('avatar');
-              prefs.remove('token');
-              loading_s = false;
-              Future.delayed(const Duration(seconds: 1), () {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => Auth()),
-                    (Route<dynamic> route) => false);
+    getAbsen().whenComplete(() {
+      getProfile().whenComplete(() {
+        getVerifToken().whenComplete(() {
+          setState(() {
+            if (verif == '200') {
+              loading_s = true;
+            } else {
+              setState(() async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.remove('name');
+                prefs.remove('avatar');
+                prefs.remove('token');
+                loading_s = false;
+                Future.delayed(const Duration(seconds: 1), () {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => Auth()),
+                      (Route<dynamic> route) => false);
+                });
               });
-            });
-          }
+            }
+          });
         });
       });
     });
@@ -190,14 +216,25 @@ class _HomeState extends State<Home> {
                                                     Container(
                                                       alignment:
                                                           Alignment.centerLeft,
-                                                      child: Text(
-                                                        name!,
-                                                        style: TextStyle(
-                                                          fontFamily: 'poppins',
-                                                          color: Color.fromRGBO(
-                                                              0, 186, 242, 1),
-                                                          fontWeight:
-                                                              FontWeight.bold,
+                                                      child: RichText(
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        strutStyle: StrutStyle(
+                                                            fontSize: 12.0),
+                                                        text: TextSpan(
+                                                          text: name!,
+                                                          style: TextStyle(
+                                                            fontFamily:
+                                                                'poppins',
+                                                            color:
+                                                                Color.fromRGBO(
+                                                                    0,
+                                                                    186,
+                                                                    242,
+                                                                    1),
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
@@ -238,11 +275,50 @@ class _HomeState extends State<Home> {
                                       child: Column(
                                         children: [
                                           Container(
-                                            child: Text('Presensi hari ini'),
+                                            child: RichText(
+                                              text: TextSpan(children: [
+                                                TextSpan(
+                                                  text: "Presensi hari ini",
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 12,
+                                                      fontFamily: 'poppins'),
+                                                ),
+                                                presenceData != null
+                                                    ? TextSpan(
+                                                        text: " (Hadir)",
+                                                        style: TextStyle(
+                                                            color: Colors.blue,
+                                                            fontSize: 12,
+                                                            fontFamily:
+                                                                'poppins'),
+                                                      )
+                                                    : TextSpan(
+                                                        text: "",
+                                                        style: TextStyle(
+                                                            color: Colors.blue,
+                                                            fontSize: 12,
+                                                            fontFamily:
+                                                                'poppins'),
+                                                      ),
+                                              ]),
+                                            ),
                                           ),
                                           Container(
                                             child: Text(
-                                              '05:37',
+                                              presenceDatas['employee_in'] !=
+                                                          null &&
+                                                      presenceDatas[
+                                                              'employee_out'] !=
+                                                          null
+                                                  ? presenceDatas['employee_in']
+                                                          ['datetime'] +
+                                                      " - " +
+                                                      presenceDatas[
+                                                              'employee_out']
+                                                          ['datetime']
+                                                  : DateFormat("HH:mm")
+                                                      .format(DateTime.now()),
                                               style: TextStyle(
                                                   fontFamily: 'poppins',
                                                   fontSize: 36,
@@ -251,7 +327,7 @@ class _HomeState extends State<Home> {
                                           ),
                                           Container(
                                             child: Text(
-                                              'Selasa, 23 November 2022',
+                                              tanggal,
                                               style: TextStyle(
                                                   fontFamily: 'poppins',
                                                   fontSize: 14,
@@ -260,202 +336,103 @@ class _HomeState extends State<Home> {
                                             ),
                                           ),
                                           Container(
-                                              child: Container(
-                                            margin: EdgeInsets.only(top: 14),
-                                            height: 45,
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width -
-                                                20,
-                                            child: ProgressButton(
-                                              color: Color.fromRGBO(
-                                                  0, 186, 242, 1),
-                                              onPressed: (AnimationController
-                                                  controller) async {
-                                                // httpJob(controller);
-                                                setState(() {
-                                                  loading = !loading;
-                                                });
-                                                //Aligned
-                                                TellMeAlert(
-                                                  context: context,
-                                                  padding:
-                                                      const EdgeInsets.all(30),
-                                                  child: Container(
-                                                    color: Colors.white,
-                                                    child: Container(
-                                                      padding: EdgeInsets.only(
-                                                          left: 14, right: 14),
-                                                      child: Column(
-                                                        children: [
-                                                          Container(
-                                                            margin:
-                                                                EdgeInsets.only(
-                                                                    top: 10),
-                                                            child:
-                                                                ProgressButton(
-                                                              color: Color
-                                                                  .fromRGBO(
-                                                                      0,
-                                                                      186,
-                                                                      242,
-                                                                      1),
-                                                              onPressed:
-                                                                  (AnimationController
-                                                                      controller) async {
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .push(
-                                                                  PageRouteBuilder(
-                                                                    pageBuilder: (BuildContext context,
-                                                                        Animation<double>
-                                                                            animation,
-                                                                        Animation<double>
-                                                                            secondaryAnimation) {
-                                                                      return Hadir();
-                                                                    },
-                                                                  ),
-                                                                );
-                                                              },
-                                                              borderRadius: BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          12)),
-                                                              strokeWidth: 2,
-                                                              child: Text(
-                                                                "Hadir",
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontSize:
-                                                                        18,
-                                                                    fontFamily:
-                                                                        'poppins'),
-                                                              ),
-                                                            ),
+                                            child: Container(
+                                              margin: EdgeInsets.only(top: 14),
+                                              height: 45,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width -
+                                                  20,
+                                              child: presenceDatas[
+                                                              'employee_in'] !=
+                                                          null &&
+                                                      presenceDatas[
+                                                              'employee_out'] !=
+                                                          null
+                                                  ? ProgressButton(
+                                                      color: Color.fromRGBO(
+                                                          0, 186, 242, 1),
+                                                      onPressed:
+                                                          (AnimationController
+                                                              controller) async {
+                                                        // httpJob(controller);
+                                                        setState(() {
+                                                          loading = !loading;
+                                                        });
+                                                        Navigator.of(context)
+                                                            .push(
+                                                          PageRouteBuilder(
+                                                            pageBuilder: (BuildContext
+                                                                    context,
+                                                                Animation<
+                                                                        double>
+                                                                    animation,
+                                                                Animation<
+                                                                        double>
+                                                                    secondaryAnimation) {
+                                                              return Hadir();
+                                                            },
                                                           ),
-                                                          Container(
-                                                            margin:
-                                                                EdgeInsets.only(
-                                                                    top: 10),
-                                                            child:
-                                                                ProgressButton(
-                                                              color: Color
-                                                                  .fromRGBO(
-                                                                      255,
-                                                                      73,
-                                                                      15,
-                                                                      1),
-                                                              onPressed:
-                                                                  (AnimationController
-                                                                      controller) async {},
-                                                              borderRadius: BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          12)),
-                                                              strokeWidth: 2,
-                                                              child: Text(
-                                                                "Izin",
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontSize:
-                                                                        18,
-                                                                    fontFamily:
-                                                                        'poppins'),
-                                                              ),
-                                                            ),
+                                                        );
+                                                      },
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  12)),
+                                                      strokeWidth: 2,
+                                                      child: Text(
+                                                        "Hasil",
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 18,
+                                                            fontFamily:
+                                                                'poppins'),
+                                                      ),
+                                                    )
+                                                  : ProgressButton(
+                                                      color: Color.fromRGBO(
+                                                          0, 186, 242, 1),
+                                                      onPressed:
+                                                          (AnimationController
+                                                              controller) async {
+                                                        // httpJob(controller);
+                                                        setState(() {
+                                                          loading = !loading;
+                                                        });
+                                                        Navigator.of(context)
+                                                            .push(
+                                                          PageRouteBuilder(
+                                                            pageBuilder: (BuildContext
+                                                                    context,
+                                                                Animation<
+                                                                        double>
+                                                                    animation,
+                                                                Animation<
+                                                                        double>
+                                                                    secondaryAnimation) {
+                                                              return Hadir();
+                                                            },
                                                           ),
-                                                          Container(
-                                                            margin:
-                                                                EdgeInsets.only(
-                                                                    top: 10),
-                                                            child:
-                                                                ProgressButton(
-                                                              color: Color
-                                                                  .fromARGB(
-                                                                      255,
-                                                                      255,
-                                                                      203,
-                                                                      15),
-                                                              onPressed:
-                                                                  (AnimationController
-                                                                      controller) async {},
-                                                              borderRadius: BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          12)),
-                                                              strokeWidth: 2,
-                                                              child: Text(
-                                                                "Sakit",
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontSize:
-                                                                        18,
-                                                                    fontFamily:
-                                                                        'poppins'),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Container(
-                                                            margin:
-                                                                EdgeInsets.only(
-                                                                    top: 10),
-                                                            child:
-                                                                ProgressButton(
-                                                              color: Color
-                                                                  .fromARGB(
-                                                                      255,
-                                                                      135,
-                                                                      135,
-                                                                      135),
-                                                              onPressed:
-                                                                  (AnimationController
-                                                                      controller) async {},
-                                                              borderRadius: BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          12)),
-                                                              strokeWidth: 2,
-                                                              child: Text(
-                                                                "Tidak Hadir",
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontSize:
-                                                                        18,
-                                                                    fontFamily:
-                                                                        'poppins'),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
+                                                        );
+                                                      },
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  12)),
+                                                      strokeWidth: 2,
+                                                      child: Text(
+                                                        presenceData == null
+                                                            ? "Lakukan Presensi"
+                                                            : "Nyatakan Selesai Kerja",
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 18,
+                                                            fontFamily:
+                                                                'poppins'),
                                                       ),
                                                     ),
-                                                  ),
-                                                  borderRadius: 10,
-                                                  showCancelButton: false,
-                                                  showContent: false,
-                                                  showConfirmButton: false,
-                                                  showTitle: false,
-                                                  showIcon: false,
-                                                  onConfirm: () => print(
-                                                      "Custom widget confirmed"),
-                                                );
-                                              },
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(12)),
-                                              strokeWidth: 2,
-                                              child: Text(
-                                                "Lakukan Presensi",
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 18,
-                                                    fontFamily: 'poppins'),
-                                              ),
                                             ),
-                                          ))
+                                          )
                                         ],
                                       ),
                                     ),

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:blitz_hris/View/Auth/Auth.dart';
+import 'package:blitz_hris/View/Profile/DataDiri.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
@@ -201,7 +202,17 @@ class _ProfileState extends State<Profile> {
                               ),
                             ),
                             GestureDetector(
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  PageRouteBuilder(
+                                    pageBuilder: (BuildContext context,
+                                        Animation<double> animation,
+                                        Animation<double> secondaryAnimation) {
+                                      return DataDiri();
+                                    },
+                                  ),
+                                );
+                              },
                               child: Container(
                                 padding: EdgeInsets.all(15),
                                 margin: EdgeInsets.only(top: 20),

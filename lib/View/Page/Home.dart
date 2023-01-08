@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:blitz_hris/View/Home/Hadir.dart';
 import 'package:blitz_hris/View/Page/Profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,17 +20,12 @@ import '../../Config/Api.dart';
 import '../Auth/Auth.dart';
 import '../Router/Navigation.dart';
 
+enum att { hadir, izin, sakit, tidakhadir }
+
 class Home extends StatefulWidget {
+  const Home({super.key});
   @override
   State<Home> createState() => _HomeState();
-}
-
-class GroupModel {
-  String text;
-  int index;
-  bool selected;
-
-  GroupModel({required this.text, required this.index, required this.selected});
 }
 
 class _HomeState extends State<Home> {
@@ -37,6 +33,7 @@ class _HomeState extends State<Home> {
   String? avatar;
   String? token;
   bool loading_s = false;
+  att? _att = att.hadir;
 
   Future getProfile() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -290,7 +287,150 @@ class _HomeState extends State<Home> {
                                                       padding: EdgeInsets.only(
                                                           left: 14, right: 14),
                                                       child: Column(
-                                                        children: [],
+                                                        children: [
+                                                          Container(
+                                                            margin:
+                                                                EdgeInsets.only(
+                                                                    top: 10),
+                                                            child:
+                                                                ProgressButton(
+                                                              color: Color
+                                                                  .fromRGBO(
+                                                                      0,
+                                                                      186,
+                                                                      242,
+                                                                      1),
+                                                              onPressed:
+                                                                  (AnimationController
+                                                                      controller) async {
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .push(
+                                                                  PageRouteBuilder(
+                                                                    pageBuilder: (BuildContext context,
+                                                                        Animation<double>
+                                                                            animation,
+                                                                        Animation<double>
+                                                                            secondaryAnimation) {
+                                                                      return Hadir();
+                                                                    },
+                                                                  ),
+                                                                );
+                                                              },
+                                                              borderRadius: BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          12)),
+                                                              strokeWidth: 2,
+                                                              child: Text(
+                                                                "Hadir",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize:
+                                                                        18,
+                                                                    fontFamily:
+                                                                        'poppins'),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Container(
+                                                            margin:
+                                                                EdgeInsets.only(
+                                                                    top: 10),
+                                                            child:
+                                                                ProgressButton(
+                                                              color: Color
+                                                                  .fromRGBO(
+                                                                      255,
+                                                                      73,
+                                                                      15,
+                                                                      1),
+                                                              onPressed:
+                                                                  (AnimationController
+                                                                      controller) async {},
+                                                              borderRadius: BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          12)),
+                                                              strokeWidth: 2,
+                                                              child: Text(
+                                                                "Izin",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize:
+                                                                        18,
+                                                                    fontFamily:
+                                                                        'poppins'),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Container(
+                                                            margin:
+                                                                EdgeInsets.only(
+                                                                    top: 10),
+                                                            child:
+                                                                ProgressButton(
+                                                              color: Color
+                                                                  .fromARGB(
+                                                                      255,
+                                                                      255,
+                                                                      203,
+                                                                      15),
+                                                              onPressed:
+                                                                  (AnimationController
+                                                                      controller) async {},
+                                                              borderRadius: BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          12)),
+                                                              strokeWidth: 2,
+                                                              child: Text(
+                                                                "Sakit",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize:
+                                                                        18,
+                                                                    fontFamily:
+                                                                        'poppins'),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Container(
+                                                            margin:
+                                                                EdgeInsets.only(
+                                                                    top: 10),
+                                                            child:
+                                                                ProgressButton(
+                                                              color: Color
+                                                                  .fromARGB(
+                                                                      255,
+                                                                      135,
+                                                                      135,
+                                                                      135),
+                                                              onPressed:
+                                                                  (AnimationController
+                                                                      controller) async {},
+                                                              borderRadius: BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          12)),
+                                                              strokeWidth: 2,
+                                                              child: Text(
+                                                                "Tidak Hadir",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize:
+                                                                        18,
+                                                                    fontFamily:
+                                                                        'poppins'),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
                                                     ),
                                                   ),

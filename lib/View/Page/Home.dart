@@ -168,7 +168,7 @@ class _HomeState extends State<Home> {
                               child: Row(
                                 children: [
                                   Expanded(
-                                    flex: 8,
+                                    flex: 10,
                                     child: Container(
                                       padding: EdgeInsets.all(10),
                                       child: Row(
@@ -188,7 +188,7 @@ class _HomeState extends State<Home> {
                                             ),
                                           ),
                                           Expanded(
-                                            flex: 7,
+                                            flex: 10,
                                             child: Container(
                                                 margin:
                                                     EdgeInsets.only(left: 10),
@@ -203,13 +203,11 @@ class _HomeState extends State<Home> {
                                                             fontFamily:
                                                                 'poppins',
                                                             color:
-                                                                Color.fromRGBO(
-                                                                    0,
-                                                                    186,
-                                                                    242,
-                                                                    1),
-                                                            fontWeight:
-                                                                FontWeight.bold,
+                                                                Color.fromARGB(
+                                                                    255,
+                                                                    180,
+                                                                    195,
+                                                                    199),
                                                             fontSize: 12),
                                                       ),
                                                     ),
@@ -217,8 +215,7 @@ class _HomeState extends State<Home> {
                                                       alignment:
                                                           Alignment.centerLeft,
                                                       child: RichText(
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
+                                                        // overflow: TextOverflow,
                                                         strutStyle: StrutStyle(
                                                             fontSize: 12.0),
                                                         text: TextSpan(
@@ -244,8 +241,8 @@ class _HomeState extends State<Home> {
                                         ],
                                       ),
                                       decoration: BoxDecoration(
-                                        color:
-                                            Color.fromARGB(150, 174, 227, 244),
+                                        // color:
+                                        //     Color.fromARGB(150, 174, 227, 244),
                                         borderRadius:
                                             BorderRadius.circular(100),
                                       ),
@@ -418,7 +415,7 @@ class _HomeState extends State<Home> {
                                                       borderRadius:
                                                           BorderRadius.all(
                                                               Radius.circular(
-                                                                  12)),
+                                                                  20)),
                                                       strokeWidth: 2,
                                                       child: Text(
                                                         presenceData == null
@@ -437,8 +434,10 @@ class _HomeState extends State<Home> {
                                       ),
                                     ),
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(color: Colors.grey),
+                                      borderRadius: BorderRadius.circular(15),
+                                      border: Border.all(
+                                          color: Color.fromARGB(
+                                              255, 228, 228, 228)),
                                     ),
                                   ),
                                 ),
@@ -453,8 +452,8 @@ class _HomeState extends State<Home> {
                                     child: Text(
                                       'Kehadiran',
                                       style: TextStyle(
-                                          fontFamily: 'poppins',
-                                          fontWeight: FontWeight.bold),
+                                        fontFamily: 'poppins',
+                                      ),
                                     ),
                                   ),
                                   Expanded(
@@ -463,7 +462,6 @@ class _HomeState extends State<Home> {
                                       textAlign: TextAlign.right,
                                       style: TextStyle(
                                         fontFamily: 'poppins',
-                                        fontWeight: FontWeight.bold,
                                         fontSize: 12,
                                         color: Color.fromRGBO(0, 186, 242, 1),
                                       ),
@@ -527,7 +525,6 @@ class _HomeState extends State<Home> {
                                               'Senin, 06:30 - 15:00',
                                               style: TextStyle(
                                                 fontSize: 12,
-                                                fontWeight: FontWeight.bold,
                                                 color: Colors.black,
                                                 fontFamily: 'poppins',
                                               ),
@@ -564,8 +561,10 @@ class _HomeState extends State<Home> {
                                       ],
                                     ),
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(color: Colors.grey),
+                                      borderRadius: BorderRadius.circular(15),
+                                      border: Border.all(
+                                          color: Color.fromARGB(
+                                              255, 218, 218, 218)),
                                     ),
                                   ),
                                 ),
@@ -623,7 +622,6 @@ class _HomeState extends State<Home> {
                                               '-',
                                               style: TextStyle(
                                                 fontSize: 12,
-                                                fontWeight: FontWeight.bold,
                                                 color: Colors.black,
                                                 fontFamily: 'poppins',
                                               ),
@@ -660,8 +658,10 @@ class _HomeState extends State<Home> {
                                       ],
                                     ),
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(color: Colors.grey),
+                                      borderRadius: BorderRadius.circular(15),
+                                      border: Border.all(
+                                          color: Color.fromARGB(
+                                              255, 218, 218, 218)),
                                     ),
                                   ),
                                 ),
@@ -719,7 +719,6 @@ class _HomeState extends State<Home> {
                                               'Senin, 06:30 - 15:00',
                                               style: TextStyle(
                                                 fontSize: 12,
-                                                fontWeight: FontWeight.bold,
                                                 color: Colors.black,
                                                 fontFamily: 'poppins',
                                               ),
@@ -757,8 +756,10 @@ class _HomeState extends State<Home> {
                                       ],
                                     ),
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(color: Colors.grey),
+                                      borderRadius: BorderRadius.circular(15),
+                                      border: Border.all(
+                                          color: Color.fromARGB(
+                                              255, 218, 218, 218)),
                                     ),
                                   ),
                                 ),
@@ -816,7 +817,6 @@ class _HomeState extends State<Home> {
                                               'Senin, 06:30 - 15:00',
                                               style: TextStyle(
                                                 fontSize: 12,
-                                                fontWeight: FontWeight.bold,
                                                 color: Colors.black,
                                                 fontFamily: 'poppins',
                                               ),
@@ -854,8 +854,10 @@ class _HomeState extends State<Home> {
                                       ],
                                     ),
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(color: Colors.grey),
+                                      borderRadius: BorderRadius.circular(15),
+                                      border: Border.all(
+                                          color: Color.fromARGB(
+                                              255, 218, 218, 218)),
                                     ),
                                   ),
                                 ),

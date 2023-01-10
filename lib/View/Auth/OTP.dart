@@ -82,8 +82,7 @@ class _OTPState extends State<OTP> {
                             child: Text(
                               'Kode OTP',
                               style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
                                 fontFamily: 'poppins',
                               ),
                             ),
@@ -92,7 +91,7 @@ class _OTPState extends State<OTP> {
                             padding: EdgeInsets.only(bottom: 10),
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              'Silahkan check email/WA anda dan masukan kode OTP',
+                              'Silahkan cek Whatsapp anda dan masukan kode verifikasi',
                               style: TextStyle(
                                 fontSize: 14,
                                 fontFamily: 'poppins',

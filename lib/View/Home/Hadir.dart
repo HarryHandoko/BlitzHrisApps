@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:progress_indicator_button/progress_button.dart';
@@ -246,7 +247,7 @@ class _HadirState extends State<Hadir> {
                                           margin: EdgeInsets.only(top: 10),
                                           alignment: Alignment.topLeft,
                                           child: Icon(
-                                            FeatherIcons.chevronsLeft,
+                                            FontAwesomeIcons.circleChevronLeft,
                                             color: Colors.black,
                                           ),
                                         ),
@@ -286,16 +287,22 @@ class _HadirState extends State<Hadir> {
                             ),
                             Container(
                               alignment: Alignment.centerLeft,
-                              margin: EdgeInsets.all(20),
+                              margin: EdgeInsets.only(
+                                  left: 30, right: 30, top: 30, bottom: 10),
                               child: Text(
                                 'Lokasi Anda',
                                 textAlign: TextAlign.start,
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                // style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                             ),
                             Container(
-                              alignment: Alignment.centerLeft,
-                              margin: EdgeInsets.all(5),
+                              alignment: Alignment.center,
+                              padding: EdgeInsets.only(
+                                  left: 6, right: 6, top: 10, bottom: 10),
+                              decoration: BoxDecoration(
+                                  color: Color.fromARGB(255, 240, 240, 240),
+                                  borderRadius: BorderRadius.circular(6)),
+                              margin: EdgeInsets.only(left: 20, right: 20),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
@@ -308,18 +315,22 @@ class _HadirState extends State<Hadir> {
                                   ),
                                   Expanded(
                                     flex: 10,
-                                    child: Text(_currentAddress!),
+                                    child: Text(
+                                      _currentAddress!,
+                                      style: TextStyle(fontSize: 12),
+                                    ),
                                   ),
                                 ],
                               ),
                             ),
                             Container(
                               alignment: Alignment.centerLeft,
-                              margin: EdgeInsets.all(20),
+                              margin: EdgeInsets.only(
+                                  left: 20, right: 20, top: 20, bottom: 10),
                               child: Text(
                                 'Upload foto selfie',
                                 textAlign: TextAlign.start,
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                // style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                             ),
                             Row(
@@ -395,15 +406,16 @@ class _HadirState extends State<Hadir> {
                                       'Jam Masuk',
                                       style: TextStyle(
                                         fontSize: 13,
-                                        fontWeight: FontWeight.bold,
                                         fontFamily: 'poppins',
                                       ),
                                     ),
                                   ),
                                   Container(
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(color: Colors.grey),
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(
+                                          color: Color.fromARGB(
+                                              255, 212, 212, 212)),
                                     ),
                                     child: TextFormField(
                                       readOnly: true,
@@ -419,8 +431,9 @@ class _HadirState extends State<Hadir> {
                                           color: Color.fromRGBO(0, 186, 242, 1),
                                         ),
                                         hintText: 'Jam Masuk',
-                                        hintStyle:
-                                            TextStyle(color: Colors.grey),
+                                        hintStyle: TextStyle(
+                                            color: Color.fromARGB(
+                                                255, 209, 209, 209)),
                                       ),
                                     ),
                                   ),
@@ -489,7 +502,7 @@ class _HadirState extends State<Hadir> {
                                         });
                                       },
                                       borderRadius:
-                                          BorderRadius.all(Radius.circular(12)),
+                                          BorderRadius.all(Radius.circular(20)),
                                       strokeWidth: 2,
                                       child: Text(
                                         "Kirim",
@@ -517,10 +530,10 @@ class _HadirState extends State<Hadir> {
                                         });
                                       },
                                       borderRadius:
-                                          BorderRadius.all(Radius.circular(12)),
+                                          BorderRadius.all(Radius.circular(20)),
                                       strokeWidth: 2,
                                       child: Text(
-                                        "Nyatakan Selesai Kerja",
+                                        "Kirim",
                                         style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 18,
@@ -629,7 +642,7 @@ class _HadirState extends State<Hadir> {
           Alert(
             context: context,
             type: AlertType.success,
-            desc: "Presensi Hadir Berhasil!",
+            desc: "Presensi Telah Berhasil Dikirim!",
             buttons: [
               DialogButton(
                 color: Colors.blue,
@@ -692,7 +705,7 @@ class _HadirState extends State<Hadir> {
           Alert(
             context: context,
             type: AlertType.success,
-            desc: "Presensi Selesai Bekerja Berhasil!",
+            desc: "Presensi Telah Berhasil Dikirim!",
             buttons: [
               DialogButton(
                 color: Colors.blue,

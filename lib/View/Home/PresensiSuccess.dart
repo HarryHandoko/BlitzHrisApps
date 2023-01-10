@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:progress_indicator_button/progress_button.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -162,7 +163,7 @@ class _PresensiSuccessState extends State<PresensiSuccess> {
                                           margin: EdgeInsets.only(top: 10),
                                           alignment: Alignment.topLeft,
                                           child: Icon(
-                                            FeatherIcons.chevronsLeft,
+                                            FontAwesomeIcons.circleChevronLeft,
                                             color: Colors.black,
                                           ),
                                         ),
@@ -229,7 +230,7 @@ class _PresensiSuccessState extends State<PresensiSuccess> {
                                     BorderRadius.all(Radius.circular(12)),
                                 strokeWidth: 2,
                                 child: Text(
-                                  "Kembali Ke Dashboard",
+                                  "Kembali Ke Menu Utama",
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 18,

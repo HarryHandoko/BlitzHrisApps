@@ -245,7 +245,7 @@ class _ProfileState extends State<Profile> {
                                   borderRadius: BorderRadius.circular(10),
                                   border: Border.all(
                                       color:
-                                          Color.fromARGB(255, 200, 200, 200)),
+                                          Color.fromARGB(255, 233, 233, 233)),
                                 ),
                               ),
                             ),
@@ -292,7 +292,7 @@ class _ProfileState extends State<Profile> {
                                   borderRadius: BorderRadius.circular(10),
                                   border: Border.all(
                                       color:
-                                          Color.fromARGB(255, 200, 200, 200)),
+                                          Color.fromARGB(255, 233, 233, 233)),
                                 ),
                               ),
                             ),
@@ -329,15 +329,17 @@ class _ProfileState extends State<Profile> {
                                   borderRadius: BorderRadius.circular(10),
                                   border: Border.all(
                                       color:
-                                          Color.fromARGB(255, 200, 200, 200)),
+                                          Color.fromARGB(255, 233, 233, 233)),
                                 ),
                               ),
                             ),
                             GestureDetector(
                               onTap: () {
                                 confirmationDialog(
-                                    context, "Apakah anda ingin keluar?",
-                                    positiveText: "Ya Keluar",
+                                    title: '',
+                                    context,
+                                    "Apakah anda ingin keluar?",
+                                    positiveText: "Ya",
                                     positiveAction: () async {
                                   SharedPreferences prefs =
                                       await SharedPreferences.getInstance();
@@ -389,7 +391,7 @@ class _ProfileState extends State<Profile> {
                                   borderRadius: BorderRadius.circular(10),
                                   border: Border.all(
                                       color:
-                                          Color.fromARGB(255, 200, 200, 200)),
+                                          Color.fromARGB(255, 233, 233, 233)),
                                 ),
                               ),
                             ),

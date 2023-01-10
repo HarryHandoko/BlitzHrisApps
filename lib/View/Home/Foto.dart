@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:progress_indicator_button/progress_button.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -185,7 +186,7 @@ class _FotoState extends State<Foto> {
                                           margin: EdgeInsets.only(top: 10),
                                           alignment: Alignment.topLeft,
                                           child: Icon(
-                                            FeatherIcons.chevronsLeft,
+                                            FontAwesomeIcons.circleChevronLeft,
                                             color: Colors.black,
                                           ),
                                         ),
@@ -221,9 +222,8 @@ class _FotoState extends State<Foto> {
                                       Expanded(
                                         flex: 8,
                                         child: Text(
-                                          'Foto Absensi',
+                                          'Foto Selfie',
                                           style: TextStyle(
-                                            fontWeight: FontWeight.bold,
                                             color: Colors.black,
                                           ),
                                         ),
@@ -238,7 +238,6 @@ class _FotoState extends State<Foto> {
                                                 child: Text(
                                                   'Ulangi Foto',
                                                   style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
                                                     color: Colors.blue,
                                                   ),
                                                   textAlign: TextAlign.right,
@@ -334,7 +333,7 @@ class _FotoState extends State<Foto> {
                                             color:
                                                 Color.fromRGBO(0, 186, 242, 1),
                                             borderRadius: BorderRadius.all(
-                                                Radius.circular(12)),
+                                                Radius.circular(20)),
                                             strokeWidth: 2,
                                             child: Text(
                                               "Simpan",

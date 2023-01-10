@@ -82,83 +82,113 @@ class _AuthState extends State<Auth> {
                   margin: EdgeInsets.only(bottom: 20),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
-                        margin: EdgeInsets.only(bottom: 20),
+                        margin: EdgeInsets.only(bottom: 8),
                         child: Text(
-                          'Silahkan pilih akses masuk',
+                          'Pilih Metode Verifikasi',
                           style: TextStyle(
-                              fontWeight: FontWeight.bold, color: Colors.white),
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontSize: 18),
                         ),
                       ),
                       Container(
-                        width: 300,
-                        height: 50,
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              PageRouteBuilder(
-                                pageBuilder: (BuildContext context,
-                                    Animation<double> animation,
-                                    Animation<double> secondaryAnimation) {
-                                  return Login();
-                                },
+                          margin: EdgeInsets.only(bottom: 20),
+                          padding: EdgeInsets.only(left: 20, right: 20),
+                          child: Center(
+                            child: Text(
+                              'Pilih salah satu metode di bawah ini untuk mendapatkan kode verifikasi',
+                              textAlign: TextAlign.center,
+                              maxLines: 2,
+                              textHeightBehavior: TextHeightBehavior(
+                                  applyHeightToFirstAscent: true),
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  height: 1.5),
+                            ),
+                          )),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            PageRouteBuilder(
+                              pageBuilder: (BuildContext context,
+                                  Animation<double> animation,
+                                  Animation<double> secondaryAnimation) {
+                                return Login();
+                              },
+                            ),
+                          );
+                        },
+                        child: Container(
+                          width: 300,
+                          height: 50,
+                          margin: EdgeInsets.only(bottom: 10),
+                          padding: EdgeInsets.only(left: 25),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20)),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Icon(
+                                FontAwesomeIcons.envelope,
+                                size: 24.0,
+                                color: Color.fromRGBO(0, 186, 242, 1),
                               ),
-                            );
-                          },
-                          icon: Icon(
-                            FontAwesomeIcons.google,
-                            size: 24.0,
-                            color: Colors.black,
-                          ),
-                          label: Text(
-                            'Masuk dengan Gmail',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                          style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.all(Colors.white),
+                              Container(
+                                margin: EdgeInsets.only(left: 12),
+                                child: Text(
+                                  'Masuk dengan Email',
+                                  style: TextStyle(
+                                      color: Color.fromRGBO(0, 186, 242, 1)),
+                                ),
+                              )
+                            ],
                           ),
                         ),
                       ),
-                      Container(
-                        margin: EdgeInsets.only(top: 10, bottom: 10),
-                        child: Text(
-                          'Atau',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, color: Colors.white),
-                        ),
-                      ),
-                      Container(
-                        width: 300,
-                        height: 50,
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              PageRouteBuilder(
-                                pageBuilder: (BuildContext context,
-                                    Animation<double> animation,
-                                    Animation<double> secondaryAnimation) {
-                                  return LogWithWA();
-                                },
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            PageRouteBuilder(
+                              pageBuilder: (BuildContext context,
+                                  Animation<double> animation,
+                                  Animation<double> secondaryAnimation) {
+                                return LogWithWA();
+                              },
+                            ),
+                          );
+                        },
+                        child: Container(
+                          width: 300,
+                          height: 50,
+                          padding: EdgeInsets.only(left: 25),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20)),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Icon(
+                                FontAwesomeIcons.whatsapp,
+                                size: 24.0,
+                                color: Color.fromRGBO(0, 186, 242, 1),
                               ),
-                            );
-                          },
-                          icon: Icon(
-                            FontAwesomeIcons.whatsapp,
-                            size: 24.0,
-                            color: Colors.black,
-                          ),
-                          label: Text(
-                            'Masuk dengan WhatsApp',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                          style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.all(Colors.white),
+                              Container(
+                                margin: EdgeInsets.only(left: 12),
+                                child: Text(
+                                  'Masuk dengan Whatsapp',
+                                  style: TextStyle(
+                                      color: Color.fromRGBO(0, 186, 242, 1)),
+                                ),
+                              )
+                            ],
                           ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),

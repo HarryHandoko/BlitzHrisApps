@@ -11,6 +11,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:progress_indicator_button/progress_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -60,6 +61,53 @@ class _LoginState extends State<Login> {
                     child: Column(
                       children: [
                         Container(
+                          padding:
+                              EdgeInsets.only(left: 20, right: 20, top: 20),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                flex: 1,
+                                child: Container(
+                                  margin: EdgeInsets.only(top: 5),
+                                  alignment: Alignment.topLeft,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.pop(context, true);
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.all(0),
+                                      margin: EdgeInsets.only(top: 10),
+                                      alignment: Alignment.topLeft,
+                                      child: Icon(
+                                        FontAwesomeIcons.circleChevronLeft,
+                                        color:
+                                            Color.fromARGB(255, 13, 182, 224),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 11,
+                                child: Container(
+                                  padding: EdgeInsets.only(top: 20),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    'Email Login',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Color.fromARGB(255, 13, 182, 224),
+                                      fontFamily: 'poppins',
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Container(
                           margin: EdgeInsets.only(
                               top: MediaQuery.of(context).size.height / 14),
                           width: 150,
@@ -76,8 +124,7 @@ class _LoginState extends State<Login> {
                           child: Text(
                             'Login',
                             style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
                               fontFamily: 'poppins',
                             ),
                           ),
@@ -95,23 +142,13 @@ class _LoginState extends State<Login> {
                         ),
 
                         //mail
+
                         Container(
-                          padding: EdgeInsets.all(3),
-                          margin: EdgeInsets.only(top: 10),
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Email',
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'poppins',
-                            ),
-                          ),
-                        ),
-                        Container(
+                          margin: EdgeInsets.only(bottom: 8),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                                color: Color.fromARGB(255, 236, 236, 236)),
                           ),
                           child: TextFormField(
                             controller: email,
@@ -136,29 +173,19 @@ class _LoginState extends State<Login> {
                                 color: Color.fromRGBO(0, 186, 242, 1),
                               ),
                               hintText: 'Masukan email anda',
-                              hintStyle: TextStyle(color: Colors.grey),
+                              hintStyle:
+                                  TextStyle(color: Colors.grey, fontSize: 14),
                             ),
                           ),
                         ),
 
                         //password
-                        Container(
-                          padding: EdgeInsets.all(3),
-                          margin: EdgeInsets.only(top: 10),
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Kata Sandi',
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'poppins',
-                            ),
-                          ),
-                        ),
+
                         Container(
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                                color: Color.fromARGB(255, 236, 236, 236)),
                           ),
                           child: TextFormField(
                             style: TextStyle(color: Colors.black),
@@ -173,7 +200,8 @@ class _LoginState extends State<Login> {
                                 color: Color.fromRGBO(0, 186, 242, 1),
                               ),
                               hintText: 'Masukan kata sandi anda',
-                              hintStyle: TextStyle(color: Colors.grey),
+                              hintStyle:
+                                  TextStyle(color: Colors.grey, fontSize: 14),
                               suffixIcon: IconButton(
                                   icon: Icon(
                                     _isObscure
@@ -205,7 +233,7 @@ class _LoginState extends State<Login> {
                                     });
                                   },
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(12)),
+                                      BorderRadius.all(Radius.circular(20)),
                                   strokeWidth: 2,
                                   child: Text(
                                     "Masuk",
@@ -221,13 +249,13 @@ class _LoginState extends State<Login> {
                                 height: 45,
                                 width: MediaQuery.of(context).size.width - 20,
                                 child: ProgressButton(
-                                  color: Colors.grey,
+                                  color: Color.fromARGB(255, 209, 209, 209),
                                   onPressed:
                                       (AnimationController controller) async {
                                     setState(() {});
                                   },
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(12)),
+                                      BorderRadius.all(Radius.circular(20)),
                                   strokeWidth: 2,
                                   child: Text(
                                     "Masuk",
@@ -260,7 +288,6 @@ class _LoginState extends State<Login> {
                               style: TextStyle(
                                 fontSize: 13,
                                 color: Color.fromRGBO(0, 186, 242, 1),
-                                fontWeight: FontWeight.bold,
                                 fontFamily: 'poppins',
                                 decoration: TextDecoration.underline,
                               ),

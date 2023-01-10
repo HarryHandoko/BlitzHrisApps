@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:progress_indicator_button/progress_button.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -162,7 +163,7 @@ class _FotoSelfieState extends State<FotoSelfie> {
                                           margin: EdgeInsets.only(top: 10),
                                           alignment: Alignment.topLeft,
                                           child: Icon(
-                                            FeatherIcons.chevronsLeft,
+                                            FontAwesomeIcons.circleChevronLeft,
                                             color: Colors.black,
                                           ),
                                         ),
@@ -247,7 +248,7 @@ class _FotoSelfieState extends State<FotoSelfie> {
                                       (Route<dynamic> route) => false);
                                 },
                                 borderRadius:
-                                    BorderRadius.all(Radius.circular(12)),
+                                    BorderRadius.all(Radius.circular(20)),
                                 strokeWidth: 2,
                                 child: Text(
                                   "Foto Selfie Sekarang",

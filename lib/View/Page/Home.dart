@@ -359,21 +359,21 @@ class _HomeState extends State<Home> {
                                                         setState(() {
                                                           loading = !loading;
                                                         });
-                                                        Navigator.of(context)
-                                                            .push(
-                                                          PageRouteBuilder(
-                                                            pageBuilder: (BuildContext
-                                                                    context,
-                                                                Animation<
-                                                                        double>
-                                                                    animation,
-                                                                Animation<
-                                                                        double>
-                                                                    secondaryAnimation) {
-                                                              return Hadir();
-                                                            },
-                                                          ),
-                                                        );
+                                                        // Navigator.of(context)
+                                                        //     .push(
+                                                        //   PageRouteBuilder(
+                                                        //     pageBuilder: (BuildContext
+                                                        //             context,
+                                                        //         Animation<
+                                                        //                 double>
+                                                        //             animation,
+                                                        //         Animation<
+                                                        //                 double>
+                                                        //             secondaryAnimation) {
+                                                        //       return Hadir();
+                                                        //     },
+                                                        //   ),
+                                                        // );
                                                       },
                                                       borderRadius:
                                                           BorderRadius.all(

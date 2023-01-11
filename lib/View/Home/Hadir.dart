@@ -142,31 +142,51 @@ class _HadirState extends State<Hadir> {
     return "Success";
   }
 
+  var presenceDatas;
+  Future getAbsen() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var response = await http
+        .get(Uri.parse(Uri.encodeFull(KEY.BASE_URL + 'v1/shift')), headers: {
+      "Accept": "application/json",
+      "Authorization": "Bearer ${prefs.getString('token')}",
+    });
+
+    setState(() {
+      var jsosn = json.decode(response.body);
+      presenceDatas = json.decode(response.body)['data'];
+    });
+
+    return "Success";
+  }
+
   void initState() {
     super.initState();
     jam_masuk.text = dt.hour.toString() + ":" + dt.minute.toString();
-    getProfile().whenComplete(() {
+    getVerifToken().whenComplete(() {
       _getCurrentPosition().whenComplete(() {
-        getVerifToken().whenComplete(() {
-          setState(() {
-            if (verif == '200') {
-              loading_s = true;
-            } else {
-              setState(() async {
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                prefs.remove('name');
-                prefs.remove('avatar');
-                prefs.remove('token');
-                loading_s = false;
-                Future.delayed(const Duration(seconds: 1), () {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => Auth()),
-                      (Route<dynamic> route) => false);
+        getProfile().whenComplete(() {
+          getAbsen().whenComplete(() {
+            setState(() {
+              if (verif == '200') {
+                loading_s = true;
+              } else {
+                setState(() async {
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  prefs.remove('name');
+                  prefs.remove('avatar');
+                  prefs.remove('token');
+                  loading_s = false;
+                  Future.delayed(const Duration(seconds: 1), () {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => Auth()),
+                        (Route<dynamic> route) => false);
+                  });
                 });
-              });
-            }
+              }
+            });
           });
         });
       });
@@ -403,7 +423,9 @@ class _HadirState extends State<Hadir> {
                                     margin: EdgeInsets.only(top: 10),
                                     alignment: Alignment.centerLeft,
                                     child: Text(
-                                      'Jam Masuk',
+                                      presenceDatas['employee_in'] == null
+                                          ? 'Jam Masuk'
+                                          : 'Jam Pulang',
                                       style: TextStyle(
                                         fontSize: 13,
                                         fontFamily: 'poppins',
@@ -484,7 +506,7 @@ class _HadirState extends State<Hadir> {
                             //     ],
                             //   ),
                             // ),
-                            imageAbsen == null
+                            presenceDatas['employee_in'] == null
                                 ? Container(
                                     margin: EdgeInsets.all(20),
                                     height: 45,

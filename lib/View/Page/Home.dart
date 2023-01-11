@@ -2,7 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:badges/badges.dart';
+import 'package:blitz_hris/View/Components/Notifications.dart';
 import 'package:blitz_hris/View/Home/Hadir.dart';
+import 'package:blitz_hris/View/Home/HasilAbsensi.dart';
 import 'package:blitz_hris/View/Page/Profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -184,7 +187,7 @@ class _HomeState extends State<Home> {
                                               backgroundColor: Color.fromRGBO(
                                                   0, 186, 242, 1),
                                               elevation: 5,
-                                              radius: 20,
+                                              radius: 18,
                                             ),
                                           ),
                                           Expanded(
@@ -254,7 +257,29 @@ class _HomeState extends State<Home> {
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
                                         Container(
-                                          child: Icon(FeatherIcons.bell),
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              Navigator.of(context).push(
+                                                PageRouteBuilder(
+                                                  pageBuilder: (BuildContext
+                                                          context,
+                                                      Animation<double>
+                                                          animation,
+                                                      Animation<double>
+                                                          secondaryAnimation) {
+                                                    return Notifications();
+                                                  },
+                                                ),
+                                              );
+                                            },
+                                            child: Badge(
+                                              badgeColor: Colors.blue,
+                                              badgeContent: Text('1',
+                                                  style: TextStyle(
+                                                      color: Colors.white)),
+                                              child: Icon(FeatherIcons.bell),
+                                            ),
+                                          ),
                                         )
                                       ],
                                     ),
@@ -356,26 +381,26 @@ class _HomeState extends State<Home> {
                                                         setState(() {
                                                           loading = !loading;
                                                         });
-                                                        // Navigator.of(context)
-                                                        //     .push(
-                                                        //   PageRouteBuilder(
-                                                        //     pageBuilder: (BuildContext
-                                                        //             context,
-                                                        //         Animation<
-                                                        //                 double>
-                                                        //             animation,
-                                                        //         Animation<
-                                                        //                 double>
-                                                        //             secondaryAnimation) {
-                                                        //       return Hadir();
-                                                        //     },
-                                                        //   ),
-                                                        // );
+                                                        Navigator.of(context)
+                                                            .push(
+                                                          PageRouteBuilder(
+                                                            pageBuilder: (BuildContext
+                                                                    context,
+                                                                Animation<
+                                                                        double>
+                                                                    animation,
+                                                                Animation<
+                                                                        double>
+                                                                    secondaryAnimation) {
+                                                              return HasilAbsensi();
+                                                            },
+                                                          ),
+                                                        );
                                                       },
                                                       borderRadius:
                                                           BorderRadius.all(
                                                               Radius.circular(
-                                                                  12)),
+                                                                  20)),
                                                       strokeWidth: 2,
                                                       child: Text(
                                                         "Hasil",

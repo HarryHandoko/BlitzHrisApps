@@ -201,7 +201,8 @@ class _PresensiSuccessState extends State<PresensiSuccess> {
                               ),
                             ),
                             Container(
-                              margin: EdgeInsets.only(top: 30),
+                              margin:
+                                  EdgeInsets.only(top: 30, left: 30, right: 30),
                               child: Text(
                                 'Terima kasih telah bekerja hari ini. Tetap jaga kesehatan dan selamat berjumpa dengan keluarga tercinta. Hati-hati di jalan.',
                                 textAlign: TextAlign.center,
@@ -212,7 +213,7 @@ class _PresensiSuccessState extends State<PresensiSuccess> {
                               ),
                             ),
                             Container(
-                              margin: EdgeInsets.only(top: 20),
+                              margin: EdgeInsets.only(top: 40),
                               height: 45,
                               width: MediaQuery.of(context).size.width - 20,
                               child: ProgressButton(

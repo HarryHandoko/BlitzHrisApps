@@ -46,6 +46,7 @@ dependencies:
   geocoder: ^0.2.1
   progress_state_button: ^1.0.4
   intl: ^0.18.0
+  badges: ^2.0.3
 
 dev_dependencies:
   flutter_test:

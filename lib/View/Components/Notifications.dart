@@ -24,12 +24,12 @@ import 'package:http/http.dart' as http;
 
 import '../../Config/Api.dart';
 
-class FotoSelfie extends StatefulWidget {
+class Notifications extends StatefulWidget {
   @override
-  State<FotoSelfie> createState() => _FotoSelfieState();
+  State<Notifications> createState() => _NotificationsState();
 }
 
-class _FotoSelfieState extends State<FotoSelfie> {
+class _NotificationsState extends State<Notifications> {
   String? verif;
   String? name;
   String? token;
@@ -149,14 +149,6 @@ class _FotoSelfieState extends State<FotoSelfie> {
                                               },
                                             ),
                                           );
-                                          Navigator.pushAndRemoveUntil(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder:
-                                                    (BuildContext context) =>
-                                                        Hadir(),
-                                              ),
-                                              (Route<dynamic> route) => false);
                                         },
                                         child: Container(
                                           padding: EdgeInsets.all(0),
@@ -176,7 +168,7 @@ class _FotoSelfieState extends State<FotoSelfie> {
                                       padding: EdgeInsets.only(top: 20),
                                       alignment: Alignment.center,
                                       child: Text(
-                                        'Foto Selfie Absen',
+                                        'Pemberitahuan',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           color: Colors.black,
@@ -191,73 +183,70 @@ class _FotoSelfieState extends State<FotoSelfie> {
                               ),
                             ),
                             Container(
-                              alignment: Alignment.center,
-                              margin: EdgeInsets.only(top: 30, left: 20),
-                              width: 400,
-                              child: const Image(
-                                alignment: Alignment.centerLeft,
-                                image: AssetImage('assets/image/selfie.png'),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            Container(
-                              margin:
-                                  EdgeInsets.only(top: 30, left: 30, right: 30),
-                              child: Text(
-                                'Pastikan foto dalam keadaan jelas dan pencahayaan yang bagus',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontFamily: 'poppins',
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(top: 40),
-                              height: 45,
-                              width: MediaQuery.of(context).size.width - 20,
-                              child: ProgressButton(
-                                color: Color.fromRGBO(0, 186, 242, 1),
-                                onPressed: (AnimationController controller) {
-                                  Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            Navigation(),
+                              padding: EdgeInsets.all(20),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    child: Container(
+                                      padding: EdgeInsets.all(20),
+                                      margin: EdgeInsets.only(top: 10),
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                flex: 10,
+                                                child: Text(
+                                                  'Pengumuman',
+                                                  style: TextStyle(
+                                                      fontFamily: 'Poppins',
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 16),
+                                                ),
+                                              ),
+                                              Expanded(
+                                                flex: 2,
+                                                child: Icon(
+                                                  FeatherIcons.trash,
+                                                  size: 17,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Container(
+                                            margin: EdgeInsets.only(top: 10),
+                                            child: Text(
+                                              'Jangan lupa presensi diisi, lewat dari jam 12.00 WIB akan otomatis tidak hadir.',
+                                              style: TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  fontSize: 14),
+                                            ),
+                                          ),
+                                          Align(
+                                            alignment: Alignment.centerRight,
+                                            child: Container(
+                                              margin: EdgeInsets.only(top: 10),
+                                              child: Text(
+                                                '2 menit yang lalu',
+                                                textAlign: TextAlign.right,
+                                                style: TextStyle(
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: 12),
+                                              ),
+                                            ),
+                                          )
+                                        ],
                                       ),
-                                      (Route<dynamic> route) => false);
-                                  Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            Hadir(),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(15),
+                                        border: Border.all(
+                                            color: Color.fromARGB(
+                                                255, 218, 218, 218)),
                                       ),
-                                      (Route<dynamic> route) => false);
-                                  Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            FotoSelfie(),
-                                      ),
-                                      (Route<dynamic> route) => false);
-                                  Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            Foto(),
-                                      ),
-                                      (Route<dynamic> route) => false);
-                                },
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(20)),
-                                strokeWidth: 2,
-                                child: Text(
-                                  "Foto Selfie Sekarang",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                      fontFamily: 'poppins'),
-                                ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             )
                           ],

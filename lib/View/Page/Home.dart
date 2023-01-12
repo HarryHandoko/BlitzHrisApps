@@ -333,14 +333,24 @@ class _HomeState extends State<Home> {
                                                       presenceDatas[
                                                               'employee_out'] !=
                                                           null
-                                                  ? presenceDatas['employee_in']
-                                                          ['datetime'] +
-                                                      " - " +
-                                                      presenceDatas[
-                                                              'employee_out']
-                                                          ['datetime']
-                                                  : DateFormat("HH:mm")
-                                                      .format(DateTime.now()),
+                                                  ? presenceDatas[
+                                                              'employee_in']
+                                                          ['datetime'] + ' - ' + presenceDatas[
+                                                                  'employee_out']
+                                                              ['datetime']
+                                                  : presenceDatas[
+                                                              'employee_in'] !=
+                                                          null
+                                                      ? presenceDatas[
+                                                              'employee_in']
+                                                          ['datetime'] + ' | -- : --'
+                                                      : presenceDatas[
+                                                                  'employee_out'] !=
+                                                              null
+                                                          ? ' | -- : --' + presenceDatas[
+                                                                  'employee_out']
+                                                              ['datetime']
+                                                          : '-- : --',
                                               style: TextStyle(
                                                   fontFamily: 'poppins',
                                                   fontSize: 36,

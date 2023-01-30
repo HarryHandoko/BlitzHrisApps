@@ -139,19 +139,8 @@ class _RiwayatState extends State<Riwayat> {
                         child: Column(
                           children: [
                             Container(
-                              child: Text(
-                                'Riwayat Absensi',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: 'poppins',
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                            Container(
                               alignment: Alignment.center,
-                              margin: EdgeInsets.only(top: 120, left: 20),
+                              margin: EdgeInsets.only(top: 100, left: 20),
                               width: 400,
                               child: SvgPicture.asset(
                                 "assets/image/empty.svg",
@@ -171,32 +160,35 @@ class _RiwayatState extends State<Riwayat> {
                               ),
                             ),
                             Container(
-                              margin: EdgeInsets.only(top: 40),
-                              height: 45,
-                              width: MediaQuery.of(context).size.width - 20,
-                              child: ProgressButton(
-                                color: Color.fromRGBO(0, 186, 242, 1),
-                                onPressed: (AnimationController controller) {
-                                  Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            Navigation(),
-                                      ),
-                                      (Route<dynamic> route) => false);
-                                },
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(12)),
-                                strokeWidth: 2,
-                                child: Text(
-                                  "Kembali Ke Menu Utama",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                      fontFamily: 'poppins'),
-                                ),
-                              ),
-                            )
+                                margin: EdgeInsets.only(top: 20),
+                                height: 45,
+                                width: MediaQuery.of(context).size.width - 20,
+                                child: GestureDetector(
+                                  onTap: (() {
+                                    Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              Navigation(),
+                                        ),
+                                        (Route<dynamic> route) => false);
+                                  }),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Color.fromRGBO(0, 186, 242, 1),
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                    ),
+                                    child: Center(
+                                        child: Text(
+                                      "Kembali Ke Menu Utama",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                          fontFamily: 'poppins'),
+                                    )),
+                                  ),
+                                ))
                           ],
                         ),
                       ),

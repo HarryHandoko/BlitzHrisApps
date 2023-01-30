@@ -123,7 +123,7 @@ class _FotoSelfieState extends State<FotoSelfie> {
                     child: SingleChildScrollView(
                       child: Container(
                         margin: EdgeInsets.only(
-                            left: 0, right: 0, top: 50, bottom: 100),
+                            left: 0, right: 0, top: 50, bottom: 10),
                         child: Column(
                           children: [
                             Container(

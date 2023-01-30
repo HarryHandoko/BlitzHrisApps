@@ -238,7 +238,7 @@ class _HadirState extends State<Hadir> {
                     child: SingleChildScrollView(
                       child: Container(
                         margin: EdgeInsets.only(
-                            left: 0, right: 0, top: 50, bottom: 100),
+                            left: 0, right: 0, top: 50, bottom: 10),
                         child: Column(
                           children: [
                             Container(
@@ -331,6 +331,7 @@ class _HadirState extends State<Hadir> {
                                     child: Icon(
                                       FeatherIcons.mapPin,
                                       color: Colors.blue,
+                                      size: 20,
                                     ),
                                   ),
                                   Expanded(
@@ -343,6 +344,101 @@ class _HadirState extends State<Hadir> {
                                 ],
                               ),
                             ),
+
+                            Container(
+                              margin:
+                                  EdgeInsets.only(top: 0, left: 20, right: 20),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.all(3),
+                                    margin: EdgeInsets.only(top: 10),
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      presenceDatas['employee_in'] == null
+                                          ? 'Jam Masuk'
+                                          : 'Jam Pulang',
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontFamily: 'poppins',
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: Color.fromARGB(255, 240, 240, 240),
+                                    ),
+                                    child: TextFormField(
+                                      readOnly: true,
+                                      controller: jam_masuk,
+                                      onChanged: (vale) {},
+                                      autocorrect: false,
+                                      enableSuggestions: false,
+                                      style: TextStyle(color: Colors.black),
+                                      decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        prefixIcon: Icon(
+                                          FeatherIcons.clock,
+                                          size: 20,
+                                          color: Color.fromRGBO(0, 186, 242, 1),
+                                        ),
+                                        hintText: 'Jam Masuk',
+                                        hintStyle: TextStyle(
+                                            fontSize: 10,
+                                            color: Color.fromARGB(
+                                                255, 209, 209, 209)),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            // Container(
+                            //   margin:
+                            //       EdgeInsets.only(top: 0, left: 20, right: 20),
+                            //   child: Column(
+                            //     children: [
+                            //       Container(
+                            //         padding: EdgeInsets.all(3),
+                            //         margin: EdgeInsets.only(top: 10),
+                            //         alignment: Alignment.centerLeft,
+                            //         child: Text(
+                            //           'Keterangan (opsional)',
+                            //           style: TextStyle(
+                            //             fontSize: 13,
+                            //             fontWeight: FontWeight.bold,
+                            //             fontFamily: 'poppins',
+                            //           ),
+                            //         ),
+                            //       ),
+                            //       Container(
+                            //         decoration: BoxDecoration(
+                            //           borderRadius: BorderRadius.circular(12),
+                            //           border: Border.all(color: Colors.grey),
+                            //         ),
+                            //         child: TextFormField(
+                            //           controller: keterangan,
+                            //           onChanged: (vale) {},
+                            //           autocorrect: false,
+                            //           enableSuggestions: false,
+                            //           style: TextStyle(color: Colors.black),
+                            //           decoration: InputDecoration(
+                            //             border: InputBorder.none,
+                            //             prefixIcon: Icon(
+                            //               FeatherIcons.edit,
+                            //               color: Color.fromRGBO(0, 186, 242, 1),
+                            //             ),
+                            //             hintText: 'Keterangan (opsional)',
+                            //             hintStyle:
+                            //                 TextStyle(color: Colors.grey),
+                            //           ),
+                            //         ),
+                            //       ),
+                            //     ],
+                            //   ),
+                            // ),
+
                             Container(
                               alignment: Alignment.centerLeft,
                               margin: EdgeInsets.only(
@@ -413,99 +509,6 @@ class _HadirState extends State<Hadir> {
                                 ),
                               ],
                             ),
-                            Container(
-                              margin:
-                                  EdgeInsets.only(top: 0, left: 20, right: 20),
-                              child: Column(
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.all(3),
-                                    margin: EdgeInsets.only(top: 10),
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      presenceDatas['employee_in'] == null
-                                          ? 'Jam Masuk'
-                                          : 'Jam Pulang',
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        fontFamily: 'poppins',
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      border: Border.all(
-                                          color: Color.fromARGB(
-                                              255, 212, 212, 212)),
-                                    ),
-                                    child: TextFormField(
-                                      readOnly: true,
-                                      controller: jam_masuk,
-                                      onChanged: (vale) {},
-                                      autocorrect: false,
-                                      enableSuggestions: false,
-                                      style: TextStyle(color: Colors.black),
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        prefixIcon: Icon(
-                                          FeatherIcons.clock,
-                                          color: Color.fromRGBO(0, 186, 242, 1),
-                                        ),
-                                        hintText: 'Jam Masuk',
-                                        hintStyle: TextStyle(
-                                            color: Color.fromARGB(
-                                                255, 209, 209, 209)),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            // Container(
-                            //   margin:
-                            //       EdgeInsets.only(top: 0, left: 20, right: 20),
-                            //   child: Column(
-                            //     children: [
-                            //       Container(
-                            //         padding: EdgeInsets.all(3),
-                            //         margin: EdgeInsets.only(top: 10),
-                            //         alignment: Alignment.centerLeft,
-                            //         child: Text(
-                            //           'Keterangan (opsional)',
-                            //           style: TextStyle(
-                            //             fontSize: 13,
-                            //             fontWeight: FontWeight.bold,
-                            //             fontFamily: 'poppins',
-                            //           ),
-                            //         ),
-                            //       ),
-                            //       Container(
-                            //         decoration: BoxDecoration(
-                            //           borderRadius: BorderRadius.circular(12),
-                            //           border: Border.all(color: Colors.grey),
-                            //         ),
-                            //         child: TextFormField(
-                            //           controller: keterangan,
-                            //           onChanged: (vale) {},
-                            //           autocorrect: false,
-                            //           enableSuggestions: false,
-                            //           style: TextStyle(color: Colors.black),
-                            //           decoration: InputDecoration(
-                            //             border: InputBorder.none,
-                            //             prefixIcon: Icon(
-                            //               FeatherIcons.edit,
-                            //               color: Color.fromRGBO(0, 186, 242, 1),
-                            //             ),
-                            //             hintText: 'Keterangan (opsional)',
-                            //             hintStyle:
-                            //                 TextStyle(color: Colors.grey),
-                            //           ),
-                            //         ),
-                            //       ),
-                            //     ],
-                            //   ),
-                            // ),
                             presenceDatas['employee_in'] == null
                                 ? Container(
                                     margin: EdgeInsets.all(20),

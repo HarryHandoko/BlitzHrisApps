@@ -61,14 +61,13 @@ class _LoginState extends State<Login> {
                     child: Column(
                       children: [
                         Container(
-                          padding:
-                              EdgeInsets.only(left: 20, right: 20, top: 20),
+                          padding: EdgeInsets.only(left: 0, right: 20, top: 20),
                           child: Row(
                             children: [
                               Expanded(
                                 flex: 1,
                                 child: Container(
-                                  margin: EdgeInsets.only(top: 5),
+                                  margin: EdgeInsets.only(top: 25),
                                   alignment: Alignment.topLeft,
                                   child: GestureDetector(
                                     onTap: () {
@@ -80,8 +79,7 @@ class _LoginState extends State<Login> {
                                       alignment: Alignment.topLeft,
                                       child: Icon(
                                         FontAwesomeIcons.circleChevronLeft,
-                                        color:
-                                            Color.fromARGB(255, 13, 182, 224),
+                                        color: Color.fromARGB(255, 0, 0, 0),
                                       ),
                                     ),
                                   ),
@@ -90,13 +88,13 @@ class _LoginState extends State<Login> {
                               Expanded(
                                 flex: 11,
                                 child: Container(
-                                  padding: EdgeInsets.only(top: 20),
+                                  padding: EdgeInsets.only(top: 30),
                                   alignment: Alignment.center,
                                   child: Text(
                                     'Email Login',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                      color: Color.fromARGB(255, 13, 182, 224),
+                                      color: Color.fromARGB(255, 0, 0, 0),
                                       fontFamily: 'poppins',
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16,

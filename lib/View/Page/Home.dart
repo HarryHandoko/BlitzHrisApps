@@ -204,7 +204,7 @@ class _HomeState extends State<Home> {
                     child: SingleChildScrollView(
                       child: Container(
                         margin: EdgeInsets.only(
-                            left: 20, right: 20, top: 60, bottom: 100),
+                            left: 20, right: 20, top: 60, bottom: 10),
                         child: Column(
                           children: [
                             GestureDetector(
@@ -222,7 +222,7 @@ class _HomeState extends State<Home> {
                                             child: CircularProfileAvatar(
                                               '',
                                               child: Image.network(avatar!,
-                                                  fit: BoxFit.fill),
+                                                  fit: BoxFit.cover),
                                               borderColor: Color.fromRGBO(
                                                   0, 186, 242, 1),
                                               borderWidth: 2,
@@ -342,7 +342,8 @@ class _HomeState extends State<Home> {
                                             child: RichText(
                                               text: TextSpan(children: [
                                                 TextSpan(
-                                                  text: "Presensi hari ini",
+                                                  text:
+                                                      "Jadwal kehadiran hari ini",
                                                   style: TextStyle(
                                                       color: Colors.black,
                                                       fontSize: 12,
@@ -431,9 +432,13 @@ class _HomeState extends State<Home> {
                                                       size: 15,
                                                     ),
                                                     Text(
-                                                      ' Selfie diperlukan pada saat Jam Masuk/Pulang',
+                                                      ' Selfie diperlukan pada saat absensi',
                                                       textAlign:
                                                           TextAlign.center,
+                                                      overflow:
+                                                          TextOverflow.fade,
+                                                      style: TextStyle(
+                                                          fontSize: 12),
                                                     ),
                                                   ],
                                                 )),
@@ -534,8 +539,8 @@ class _HomeState extends State<Home> {
                                                       strokeWidth: 2,
                                                       child: Text(
                                                         presenceData == null
-                                                            ? "Lakukan Presensi"
-                                                            : "Nyatakan Selesai Kerja",
+                                                            ? "Jam Masuk"
+                                                            : "Jam Pulang",
                                                         style: TextStyle(
                                                             color: Colors.white,
                                                             fontSize: 18,
@@ -550,6 +555,24 @@ class _HomeState extends State<Home> {
                                     ),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(15),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Color.fromARGB(
+                                              255, 241, 241, 241),
+                                          offset: const Offset(
+                                            5.0,
+                                            5.0,
+                                          ),
+                                          blurRadius: 5.0,
+                                          spreadRadius: 1.0,
+                                        ), //BoxShadow
+                                        BoxShadow(
+                                          color: Colors.white,
+                                          offset: const Offset(0.0, 0.0),
+                                          blurRadius: 0.0,
+                                          spreadRadius: 0.0,
+                                        ),
+                                      ],
                                       border: Border.all(
                                           color: Color.fromARGB(
                                               255, 228, 228, 228)),
@@ -559,7 +582,7 @@ class _HomeState extends State<Home> {
                               ],
                             ),
                             Container(
-                              margin: EdgeInsets.only(top: 10),
+                              margin: EdgeInsets.only(top: 20),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
@@ -567,8 +590,7 @@ class _HomeState extends State<Home> {
                                     child: Text(
                                       'Kehadiran',
                                       style: TextStyle(
-                                        fontFamily: 'poppins',
-                                      ),
+                                          fontFamily: 'poppins', fontSize: 15),
                                     ),
                                   ),
                                   Expanded(
@@ -589,6 +611,7 @@ class _HomeState extends State<Home> {
 
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Container(
                                   child: //body
@@ -598,6 +621,7 @@ class _HomeState extends State<Home> {
                                           itemCount: dataHistory.length,
                                           itemBuilder: (context, index) {
                                             return Container(
+                                              decoration: BoxDecoration(),
                                               child: Column(
                                                 children: [
                                                   Column(
@@ -606,7 +630,7 @@ class _HomeState extends State<Home> {
                                                         child: Container(
                                                           margin:
                                                               EdgeInsets.only(
-                                                                  top: 10),
+                                                                  bottom: 10),
                                                           child: Row(
                                                             children: [
                                                               Expanded(
@@ -748,6 +772,36 @@ class _HomeState extends State<Home> {
                                                           ),
                                                           decoration:
                                                               BoxDecoration(
+                                                            boxShadow: [
+                                                              BoxShadow(
+                                                                color: Color
+                                                                    .fromARGB(
+                                                                        255,
+                                                                        241,
+                                                                        241,
+                                                                        241),
+                                                                offset:
+                                                                    const Offset(
+                                                                  5.0,
+                                                                  5.0,
+                                                                ),
+                                                                blurRadius:
+                                                                    15.0,
+                                                                spreadRadius:
+                                                                    1.0,
+                                                              ), //BoxShadow
+                                                              BoxShadow(
+                                                                color: Colors
+                                                                    .white,
+                                                                offset:
+                                                                    const Offset(
+                                                                        0.0,
+                                                                        0.0),
+                                                                blurRadius: 0.0,
+                                                                spreadRadius:
+                                                                    0.0,
+                                                              ),
+                                                            ],
                                                             borderRadius:
                                                                 BorderRadius
                                                                     .circular(
@@ -756,9 +810,9 @@ class _HomeState extends State<Home> {
                                                                 color: Color
                                                                     .fromARGB(
                                                                         255,
-                                                                        218,
-                                                                        218,
-                                                                        218)),
+                                                                        240,
+                                                                        240,
+                                                                        240)),
                                                           ),
                                                         ),
                                                       ),

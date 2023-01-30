@@ -61,7 +61,7 @@ class _LogWithWAState extends State<LogWithWA> {
                         children: [
                           Container(
                             padding:
-                                EdgeInsets.only(left: 20, right: 20, top: 20),
+                                EdgeInsets.only(left: 0, right: 20, top: 20),
                             child: Row(
                               children: [
                                 Expanded(
@@ -92,11 +92,10 @@ class _LogWithWAState extends State<LogWithWA> {
                                     padding: EdgeInsets.only(top: 30),
                                     alignment: Alignment.center,
                                     child: Text(
-                                      'Email Login',
+                                      'Whatsapp Login',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                        color:
-                                            Color.fromARGB(255, 13, 182, 224),
+                                        color: Color.fromARGB(255, 0, 0, 0),
                                         fontFamily: 'poppins',
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16,

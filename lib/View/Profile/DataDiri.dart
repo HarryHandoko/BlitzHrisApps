@@ -40,9 +40,6 @@ class _DataDiriState extends State<DataDiri> {
       name = prefs.getString('name');
       token = prefs.getString('token');
       email = prefs.getString('email');
-
-      nama_lengkap.text = name!;
-      email_address.text = email!;
     });
   }
 
@@ -57,6 +54,9 @@ class _DataDiriState extends State<DataDiri> {
     setState(() {
       var jsosn = json.decode(response.body);
       verif = jsosn['code'].toString();
+
+      nama_lengkap.text = jsosn['data']['name'];
+      email_address.text = jsosn['data']['email'];
     });
 
     return "Success";

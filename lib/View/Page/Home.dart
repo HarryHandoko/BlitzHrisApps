@@ -42,6 +42,22 @@ class _HomeState extends State<Home> {
   bool loading_s = false;
   att? _att = att.hadir;
 
+  late ScrollController _controller;
+  _scrollListener() {
+    if (_controller.offset >= _controller.position.maxScrollExtent &&
+        !_controller.position.outOfRange) {
+      setState(() {
+        //you can do anything here
+      });
+    }
+    if (_controller.offset <= _controller.position.minScrollExtent &&
+        !_controller.position.outOfRange) {
+      setState(() {
+        //you can do anything here
+      });
+    }
+  }
+
   var presenceData;
   var presenceDatas;
   Future getAbsen() async {
@@ -56,6 +72,25 @@ class _HomeState extends State<Home> {
       var jsosn = json.decode(response.body);
       presenceData = json.decode(response.body)['data']['employee_in'];
       presenceDatas = json.decode(response.body)['data'];
+    });
+
+    return "Success";
+  }
+
+  var dataHistoryPre;
+  List dataHistory = [];
+  Future getHistory() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var response = await http.get(
+        Uri.parse(Uri.encodeFull(KEY.BASE_URL + 'v1/presence-history')),
+        headers: {
+          "Accept": "application/json",
+          "Authorization": "Bearer ${prefs.getString('token')}",
+        });
+
+    setState(() {
+      var jsosn = json.decode(response.body);
+      dataHistory = json.decode(response.body)['data'];
     });
 
     return "Success";
@@ -83,6 +118,7 @@ class _HomeState extends State<Home> {
     setState(() {
       var jsosn = json.decode(response.body);
       verif = jsosn['code'].toString();
+      avatar = jsosn['data']['avatar'];
     });
 
     return "Success";
@@ -90,28 +126,33 @@ class _HomeState extends State<Home> {
 
   void initState() {
     super.initState();
-    getAbsen().whenComplete(() {
-      getProfile().whenComplete(() {
-        getVerifToken().whenComplete(() {
-          setState(() {
-            if (verif == '200') {
-              loading_s = true;
-            } else {
-              setState(() async {
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                prefs.remove('name');
-                prefs.remove('avatar');
-                prefs.remove('token');
-                loading_s = false;
-                Future.delayed(const Duration(seconds: 1), () {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => Auth()),
-                      (Route<dynamic> route) => false);
+    getVerifToken().whenComplete(() {
+      getHistory().whenComplete(() {
+        getProfile().whenComplete(() {
+          getAbsen().whenComplete(() {
+            setState(() {
+              if (verif == '200') {
+                loading_s = true;
+                _controller = ScrollController();
+                _controller.addListener(_scrollListener);
+              } else {
+                setState(() async {
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  prefs.remove('name');
+                  prefs.remove('avatar');
+                  prefs.remove('token');
+                  loading_s = false;
+                  Future.delayed(const Duration(seconds: 1), () {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => Auth()),
+                        (Route<dynamic> route) => false);
+                  });
                 });
-              });
-            }
+              }
+            });
           });
         });
       });
@@ -180,7 +221,8 @@ class _HomeState extends State<Home> {
                                             flex: 2,
                                             child: CircularProfileAvatar(
                                               '',
-                                              child: Image.network(avatar!),
+                                              child: Image.network(avatar!,
+                                                  fit: BoxFit.fill),
                                               borderColor: Color.fromRGBO(
                                                   0, 186, 242, 1),
                                               borderWidth: 2,
@@ -333,23 +375,26 @@ class _HomeState extends State<Home> {
                                                       presenceDatas[
                                                               'employee_out'] !=
                                                           null
-                                                  ? presenceDatas[
-                                                              'employee_in']
-                                                          ['datetime'] + ' - ' + presenceDatas[
-                                                                  'employee_out']
-                                                              ['datetime']
+                                                  ? presenceDatas['employee_in']
+                                                          ['datetime'] +
+                                                      ' - ' +
+                                                      presenceDatas[
+                                                              'employee_out']
+                                                          ['datetime']
                                                   : presenceDatas[
                                                               'employee_in'] !=
                                                           null
                                                       ? presenceDatas[
-                                                              'employee_in']
-                                                          ['datetime'] + ' | -- : --'
+                                                                  'employee_in']
+                                                              ['datetime'] +
+                                                          ' | -- : --'
                                                       : presenceDatas[
                                                                   'employee_out'] !=
                                                               null
-                                                          ? ' | -- : --' + presenceDatas[
-                                                                  'employee_out']
-                                                              ['datetime']
+                                                          ? ' | -- : --' +
+                                                              presenceDatas[
+                                                                      'employee_out']
+                                                                  ['datetime']
                                                           : '-- : --',
                                               style: TextStyle(
                                                   fontFamily: 'poppins',
@@ -368,8 +413,43 @@ class _HomeState extends State<Home> {
                                             ),
                                           ),
                                           Container(
+                                            width: 400,
+                                            margin: EdgeInsets.only(
+                                              top: 10,
+                                            ),
+                                            padding: EdgeInsets.only(
+                                                top: 10, bottom: 10),
                                             child: Container(
-                                              margin: EdgeInsets.only(top: 14),
+                                                padding: EdgeInsets.only(
+                                                    left: 5, right: 5),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Icon(
+                                                      FeatherIcons.alertCircle,
+                                                      size: 15,
+                                                    ),
+                                                    Text(
+                                                      ' Selfie diperlukan pada saat Jam Masuk/Pulang',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                    ),
+                                                  ],
+                                                )),
+                                            decoration: BoxDecoration(
+                                              color: Color.fromARGB(
+                                                  255, 222, 226, 250),
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                              border: Border.all(
+                                                  color: Color.fromARGB(
+                                                      255, 255, 255, 255)),
+                                            ),
+                                          ),
+                                          Container(
+                                            child: Container(
+                                              margin: EdgeInsets.only(top: 5),
                                               height: 45,
                                               width: MediaQuery.of(context)
                                                       .size
@@ -506,398 +586,191 @@ class _HomeState extends State<Home> {
                               ),
                             ),
                             //nav absensi
+
                             Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Container(
-                                  child: Container(
-                                    margin: EdgeInsets.only(top: 10),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          flex: 1,
-                                          child: Container(
-                                            height: 70,
-                                            decoration: BoxDecoration(
-                                              color: Color.fromRGBO(
-                                                  0, 186, 255, 1),
-                                              borderRadius: BorderRadius.only(
-                                                  topLeft: Radius.circular(10),
-                                                  bottomLeft:
-                                                      Radius.circular(10)),
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          flex: 2,
-                                          child: Container(
-                                            child: Column(
-                                              children: [
-                                                Text(
-                                                  'Nov',
-                                                  style: TextStyle(
-                                                    fontSize: 15,
-                                                    color: Colors.blue,
-                                                    fontFamily: 'poppins',
+                                  child: //body
+                                      ListView.builder(
+                                          controller: _controller,
+                                          shrinkWrap: true,
+                                          itemCount: dataHistory.length,
+                                          itemBuilder: (context, index) {
+                                            return Container(
+                                              child: Column(
+                                                children: [
+                                                  Column(
+                                                    children: [
+                                                      Container(
+                                                        child: Container(
+                                                          margin:
+                                                              EdgeInsets.only(
+                                                                  top: 10),
+                                                          child: Row(
+                                                            children: [
+                                                              Expanded(
+                                                                flex: 1,
+                                                                child:
+                                                                    Container(
+                                                                  height: 70,
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    color: dataHistory[index]['presence'] ==
+                                                                            'Hadir'
+                                                                        ? Color.fromRGBO(
+                                                                            0,
+                                                                            186,
+                                                                            255,
+                                                                            1)
+                                                                        : dataHistory[index]['presence'] ==
+                                                                                'Izin'
+                                                                            ? Colors.orange
+                                                                            : Colors.red,
+                                                                    borderRadius: BorderRadius.only(
+                                                                        topLeft:
+                                                                            Radius.circular(
+                                                                                10),
+                                                                        bottomLeft:
+                                                                            Radius.circular(10)),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              Expanded(
+                                                                flex: 2,
+                                                                child:
+                                                                    Container(
+                                                                  child: Column(
+                                                                    children: [
+                                                                      Text(
+                                                                        "${dataHistory[index]['month']}",
+                                                                        style:
+                                                                            TextStyle(
+                                                                          fontSize:
+                                                                              15,
+                                                                          color:
+                                                                              Colors.blue,
+                                                                          fontFamily:
+                                                                              'poppins',
+                                                                        ),
+                                                                      ),
+                                                                      Text(
+                                                                        '${dataHistory[index]['tanggal']}',
+                                                                        style:
+                                                                            TextStyle(
+                                                                          fontSize:
+                                                                              20,
+                                                                          color:
+                                                                              Colors.blue,
+                                                                          fontFamily:
+                                                                              'poppins',
+                                                                          fontWeight:
+                                                                              FontWeight.bold,
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              Expanded(
+                                                                flex: 5,
+                                                                child:
+                                                                    Container(
+                                                                  child: Text(
+                                                                    dataHistory[index]['presence'] ==
+                                                                            'Hadir'
+                                                                        ? '${dataHistory[index]['employee_in'] == null ? '--:--' : dataHistory[index]['employee_in']['datetime']} - ${dataHistory[index]['employee_out'] == null ? '--:--' : dataHistory[index]['employee_out']['datetime']}'
+                                                                        : '',
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          12,
+                                                                      color: Colors
+                                                                          .black,
+                                                                      fontFamily:
+                                                                          'poppins',
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              Expanded(
+                                                                flex: dataHistory[index]
+                                                                            [
+                                                                            'presence'] ==
+                                                                        'Tidak Hadir'
+                                                                    ? 4
+                                                                    : 2,
+                                                                child:
+                                                                    Container(
+                                                                  width: 1,
+                                                                  child:
+                                                                      TextButton(
+                                                                    style: TextButton
+                                                                        .styleFrom(
+                                                                      backgroundColor: dataHistory[index]['presence'] ==
+                                                                              'Hadir'
+                                                                          ? Color.fromRGBO(
+                                                                              0,
+                                                                              186,
+                                                                              255,
+                                                                              1)
+                                                                          : dataHistory[index]['presence'] == 'Izin'
+                                                                              ? Colors.orange
+                                                                              : Colors.red,
+                                                                    ),
+                                                                    onPressed:
+                                                                        null,
+                                                                    child: Text(
+                                                                      "${dataHistory[index]['presence']}",
+                                                                      style:
+                                                                          TextStyle(
+                                                                        fontSize:
+                                                                            10,
+                                                                        fontFamily:
+                                                                            'poppins',
+                                                                        color: Colors
+                                                                            .white,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              Expanded(
+                                                                flex: 2,
+                                                                child:
+                                                                    Container(
+                                                                  child: Icon(
+                                                                      FeatherIcons
+                                                                          .chevronRight),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        15),
+                                                            border: Border.all(
+                                                                color: Color
+                                                                    .fromARGB(
+                                                                        255,
+                                                                        218,
+                                                                        218,
+                                                                        218)),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                ),
-                                                Text(
-                                                  '23',
-                                                  style: TextStyle(
-                                                    fontSize: 20,
-                                                    color: Colors.blue,
-                                                    fontFamily: 'poppins',
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          flex: 5,
-                                          child: Container(
-                                            child: Text(
-                                              'Senin, 06:30 - 15:00',
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.black,
-                                                fontFamily: 'poppins',
+                                                ],
                                               ),
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          flex: 2,
-                                          child: Container(
-                                            width: 1,
-                                            child: TextButton(
-                                              style: TextButton.styleFrom(
-                                                backgroundColor: Colors.blue,
-                                              ),
-                                              onPressed: null,
-                                              child: Text(
-                                                'Hadir',
-                                                style: TextStyle(
-                                                  fontSize: 10,
-                                                  fontFamily: 'poppins',
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          flex: 2,
-                                          child: Container(
-                                            child:
-                                                Icon(FeatherIcons.chevronRight),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15),
-                                      border: Border.all(
-                                          color: Color.fromARGB(
-                                              255, 218, 218, 218)),
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  child: Container(
-                                    margin: EdgeInsets.only(top: 10),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          flex: 1,
-                                          child: Container(
-                                            height: 70,
-                                            decoration: BoxDecoration(
-                                              color: Color.fromRGBO(
-                                                  255, 38, 129, 1),
-                                              borderRadius: BorderRadius.only(
-                                                  topLeft: Radius.circular(10),
-                                                  bottomLeft:
-                                                      Radius.circular(10)),
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          flex: 2,
-                                          child: Container(
-                                            child: Column(
-                                              children: [
-                                                Text(
-                                                  'Nov',
-                                                  style: TextStyle(
-                                                    fontSize: 15,
-                                                    color: Color.fromRGBO(
-                                                        255, 38, 129, 1),
-                                                    fontFamily: 'poppins',
-                                                  ),
-                                                ),
-                                                Text(
-                                                  '23',
-                                                  style: TextStyle(
-                                                    fontSize: 20,
-                                                    color: Color.fromRGBO(
-                                                        255, 38, 129, 1),
-                                                    fontFamily: 'poppins',
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          flex: 5,
-                                          child: Container(
-                                            child: Text(
-                                              '-',
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.black,
-                                                fontFamily: 'poppins',
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          flex: 3,
-                                          child: Container(
-                                            width: 1,
-                                            child: TextButton(
-                                              style: TextButton.styleFrom(
-                                                backgroundColor: Color.fromRGBO(
-                                                    255, 38, 129, 1),
-                                              ),
-                                              onPressed: null,
-                                              child: Text(
-                                                'Tidak Hadir',
-                                                style: TextStyle(
-                                                  fontSize: 10,
-                                                  fontFamily: 'poppins',
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          flex: 1,
-                                          child: Container(
-                                            child: Text(''),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15),
-                                      border: Border.all(
-                                          color: Color.fromARGB(
-                                              255, 218, 218, 218)),
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  child: Container(
-                                    margin: EdgeInsets.only(top: 10),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          flex: 1,
-                                          child: Container(
-                                            height: 70,
-                                            decoration: BoxDecoration(
-                                              color: Color.fromRGBO(
-                                                  255, 183, 15, 1),
-                                              borderRadius: BorderRadius.only(
-                                                  topLeft: Radius.circular(10),
-                                                  bottomLeft:
-                                                      Radius.circular(10)),
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          flex: 2,
-                                          child: Container(
-                                            child: Column(
-                                              children: [
-                                                Text(
-                                                  'Nov',
-                                                  style: TextStyle(
-                                                    fontSize: 15,
-                                                    color: Color.fromRGBO(
-                                                        255, 183, 15, 1),
-                                                    fontFamily: 'poppins',
-                                                  ),
-                                                ),
-                                                Text(
-                                                  '23',
-                                                  style: TextStyle(
-                                                    fontSize: 20,
-                                                    color: Color.fromRGBO(
-                                                        255, 183, 15, 1),
-                                                    fontFamily: 'poppins',
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          flex: 5,
-                                          child: Container(
-                                            child: Text(
-                                              'Senin, 06:30 - 15:00',
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.black,
-                                                fontFamily: 'poppins',
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          flex: 2,
-                                          child: Container(
-                                            width: 1,
-                                            child: TextButton(
-                                              style: TextButton.styleFrom(
-                                                backgroundColor: Color.fromRGBO(
-                                                    255, 183, 15, 1),
-                                              ),
-                                              onPressed: null,
-                                              child: Text(
-                                                'Sakit',
-                                                style: TextStyle(
-                                                  fontSize: 10,
-                                                  fontFamily: 'poppins',
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          flex: 2,
-                                          child: Container(
-                                            child:
-                                                Icon(FeatherIcons.chevronRight),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15),
-                                      border: Border.all(
-                                          color: Color.fromARGB(
-                                              255, 218, 218, 218)),
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  child: Container(
-                                    margin: EdgeInsets.only(top: 10),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          flex: 1,
-                                          child: Container(
-                                            height: 70,
-                                            decoration: BoxDecoration(
-                                              color: Color.fromRGBO(
-                                                  255, 73, 15, 1),
-                                              borderRadius: BorderRadius.only(
-                                                  topLeft: Radius.circular(10),
-                                                  bottomLeft:
-                                                      Radius.circular(10)),
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          flex: 2,
-                                          child: Container(
-                                            child: Column(
-                                              children: [
-                                                Text(
-                                                  'Nov',
-                                                  style: TextStyle(
-                                                    fontSize: 15,
-                                                    color: Color.fromRGBO(
-                                                        255, 73, 15, 1),
-                                                    fontFamily: 'poppins',
-                                                  ),
-                                                ),
-                                                Text(
-                                                  '23',
-                                                  style: TextStyle(
-                                                    fontSize: 20,
-                                                    color: Color.fromRGBO(
-                                                        255, 73, 15, 1),
-                                                    fontFamily: 'poppins',
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          flex: 5,
-                                          child: Container(
-                                            child: Text(
-                                              'Senin, 06:30 - 15:00',
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.black,
-                                                fontFamily: 'poppins',
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          flex: 2,
-                                          child: Container(
-                                            width: 1,
-                                            child: TextButton(
-                                              style: TextButton.styleFrom(
-                                                backgroundColor: Color.fromRGBO(
-                                                    255, 73, 15, 1),
-                                              ),
-                                              onPressed: null,
-                                              child: Text(
-                                                'Ijin',
-                                                style: TextStyle(
-                                                  fontSize: 10,
-                                                  fontFamily: 'poppins',
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          flex: 2,
-                                          child: Container(
-                                            child:
-                                                Icon(FeatherIcons.chevronRight),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15),
-                                      border: Border.all(
-                                          color: Color.fromARGB(
-                                              255, 218, 218, 218)),
-                                    ),
-                                  ),
-                                ),
+                                            );
+                                          }),
+                                )
                               ],
-                            )
+                            ),
                           ],
                         ),
                       ),

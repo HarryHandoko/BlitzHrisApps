@@ -67,7 +67,7 @@ class _LogWithWAState extends State<LogWithWA> {
                                 Expanded(
                                   flex: 1,
                                   child: Container(
-                                    margin: EdgeInsets.only(top: 5),
+                                    margin: EdgeInsets.only(top: 25),
                                     alignment: Alignment.topLeft,
                                     child: GestureDetector(
                                       onTap: () {
@@ -80,7 +80,7 @@ class _LogWithWAState extends State<LogWithWA> {
                                         child: Icon(
                                           FontAwesomeIcons.circleChevronLeft,
                                           color:
-                                              Color.fromARGB(255, 13, 182, 224),
+                                              Color.fromARGB(255, 10, 10, 10),
                                         ),
                                       ),
                                     ),
@@ -89,7 +89,7 @@ class _LogWithWAState extends State<LogWithWA> {
                                 Expanded(
                                   flex: 11,
                                   child: Container(
-                                    padding: EdgeInsets.only(top: 20),
+                                    padding: EdgeInsets.only(top: 30),
                                     alignment: Alignment.center,
                                     child: Text(
                                       'Email Login',
@@ -109,7 +109,7 @@ class _LogWithWAState extends State<LogWithWA> {
                           ),
                           Container(
                             margin: EdgeInsets.only(
-                                top: MediaQuery.of(context).size.height / 14),
+                                top: MediaQuery.of(context).size.height / 30),
                             width: 150,
                             height: 150,
                             decoration: BoxDecoration(
@@ -309,7 +309,7 @@ class _LogWithWAState extends State<LogWithWA> {
         _isLoading = false;
         SweetAlert.show(
           context,
-          subtitle: "No Internet Connection!",
+          subtitle: "${_}",
           style: SweetAlertStyle.error,
         );
       });

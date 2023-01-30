@@ -40,13 +40,17 @@ dependencies:
   location: ^4.4.0
   google_maps_flutter: ^2.1.8
   image_picker: ^0.8.4
-  image_cropper: ^1.4.1
+  image_cropper: ^3.0.1
   geolocator: ^8.2.0
   geocoding: ^2.0.4
   geocoder: ^0.2.1
   progress_state_button: ^1.0.4
   intl: ^0.18.0
   badges: ^2.0.3
+  crop: ^0.5.4
+  crop_your_image: ^0.7.3
+  salomon_bottom_bar: ^3.3.1
+  bottom_bar: ^2.0.3
 
 dev_dependencies:
   flutter_test:

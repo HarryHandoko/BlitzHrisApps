@@ -10,12 +10,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:progress_indicator_button/progress_button.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tellme_alert/tellme_alert.dart';
 import 'package:group_radio_button/group_radio_button.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:commons/alert_dialogs.dart';
 import 'package:http/http.dart' as http;
+
+import 'package:image_picker/image_picker.dart';
 
 import '../../Config/Api.dart';
 
@@ -26,8 +29,11 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   String? name;
+  String? email;
   String? avatar;
   bool loading_s = false;
+  bool _isLoading = false;
+  File? imageFile;
 
   Future getProfile() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -49,6 +55,8 @@ class _ProfileState extends State<Profile> {
     setState(() {
       var jsosn = json.decode(response.body);
       verif = jsosn['code'].toString();
+      email = jsosn['data']['email'];
+      avatar = jsosn['data']['avatar'];
     });
 
     return "Success";
@@ -168,7 +176,9 @@ class _ProfileState extends State<Profile> {
                                                 BorderSide(color: Colors.white),
                                           ),
                                           color: Color(0xFFF5F6F9),
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            _getFromGallery();
+                                          },
                                           child: Center(
                                             child:
                                                 Icon(Icons.camera_alt_outlined),
@@ -417,6 +427,59 @@ class _ProfileState extends State<Profile> {
           ),
         ),
       );
+    }
+  }
+
+  /// Get from gallery
+  _getFromGallery() async {
+    PickedFile? pickedFile = await ImagePicker().getImage(
+      source: ImageSource.gallery,
+      maxWidth: 1800,
+      maxHeight: 1800,
+    );
+    if (pickedFile != null) {
+      setState(() {
+        imageFile = File(pickedFile.path);
+      });
+      final prefs2 = await SharedPreferences.getInstance();
+
+      Map<String, String> headers = {
+        'Accept': 'application/json',
+        "Authorization": "Bearer ${prefs2.getString('token')}",
+      };
+      var uri = Uri.parse(KEY.BASE_URL + "v1/profile");
+      var length = await imageFile!.length();
+      http.MultipartRequest request = new http.MultipartRequest('POST', uri)
+        ..headers.addAll(headers)
+        ..fields['name'] = "${name}"
+        ..fields['email'] = "${email}"
+        ..files.add(
+          http.MultipartFile('avatar', imageFile!.openRead(0), length,
+              filename: 'test.png'),
+        );
+      var respons = await http.Response.fromStream(await request.send());
+      var jsonObject = json.decode(respons.body);
+
+      if (respons.statusCode == 200) {
+        setState(() async {
+          setState(() {
+            _isLoading = true;
+            getVerifToken().whenComplete(() => () {
+                  setState(() {
+                    _isLoading = false;
+                  });
+                });
+          });
+        });
+        return;
+      } else
+        setState(() {
+          _isLoading = false;
+          errorDialog(
+            context,
+            "Erorr!",
+          );
+        });
     }
   }
 }

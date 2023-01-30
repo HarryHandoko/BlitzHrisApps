@@ -14,6 +14,7 @@ import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:intl/intl.dart';
 import 'package:progress_indicator_button/progress_button.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -41,6 +42,8 @@ class _HasilAbsensiState extends State<HasilAbsensi> {
   String? _firstMenu = 'jam_masuk';
   String? _currentAddress;
   Position? _currentPosition;
+  var dt = DateTime.now();
+  var tanggal = DateFormat("EEEEE, dd MMMM yyyy").format(DateTime.now());
   String? _long;
   String? _lat;
 
@@ -61,6 +64,7 @@ class _HasilAbsensiState extends State<HasilAbsensi> {
   }
 
   var presenceDatas;
+  var presenceData;
   Future getAbsen() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var response = await http
@@ -71,6 +75,7 @@ class _HasilAbsensiState extends State<HasilAbsensi> {
 
     setState(() {
       var jsosn = json.decode(response.body);
+      presenceData = json.decode(response.body)['data']['employee_in'];
       presenceDatas = json.decode(response.body)['data'];
     });
 
@@ -109,7 +114,7 @@ class _HasilAbsensiState extends State<HasilAbsensi> {
   Future<void> _getAddressFromLatLng(long, lat) async {
     final hasPermission = await _handleLocationPermission();
     if (!hasPermission) return;
-    await placemarkFromCoordinates(-6.2038975, 107.0307832)
+    await placemarkFromCoordinates(double.parse(lat), double.parse(long))
         .then((List<Placemark> placemarks) {
       Placemark place = placemarks[0];
       setState(() {
@@ -240,7 +245,7 @@ class _HasilAbsensiState extends State<HasilAbsensi> {
                                       padding: EdgeInsets.only(top: 20),
                                       alignment: Alignment.center,
                                       child: Text(
-                                        'Detail Riwayat',
+                                        'Riwayat Kehadiran',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           color: Colors.black,
@@ -255,64 +260,202 @@ class _HasilAbsensiState extends State<HasilAbsensi> {
                               ),
                             ),
                             Container(
-                              padding: EdgeInsets.all(10),
+                              padding: EdgeInsets.only(left: 15, right: 15),
                               child: Row(
                                 children: [
                                   Expanded(
-                                    flex: 6,
                                     child: Container(
-                                      padding: EdgeInsets.all(10),
-                                      height: 70,
-                                      child: ProgressButton(
-                                        color: _firstMenu == 'jam_masuk'
-                                            ? Color.fromRGBO(0, 186, 242, 1)
-                                            : Colors.grey,
-                                        onPressed: (AnimationController
-                                            controller) async {
-                                          // httpJob(controller);
-                                          setState(() {
-                                            _firstMenu = 'jam_masuk';
-                                          });
-                                        },
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(20)),
-                                        strokeWidth: 2,
-                                        child: Text(
-                                          "Jam Masuk",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14,
-                                              fontFamily: 'poppins'),
+                                      margin: EdgeInsets.only(top: 20),
+                                      child: Container(
+                                        padding: EdgeInsets.all(20),
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              child: RichText(
+                                                text: TextSpan(children: [
+                                                  TextSpan(
+                                                    text: "Presensi hari ini",
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 12,
+                                                        fontFamily: 'poppins'),
+                                                  ),
+                                                  presenceData != null
+                                                      ? TextSpan(
+                                                          text: " (Hadir)",
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.blue,
+                                                              fontSize: 12,
+                                                              fontFamily:
+                                                                  'poppins'),
+                                                        )
+                                                      : TextSpan(
+                                                          text: "",
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.blue,
+                                                              fontSize: 12,
+                                                              fontFamily:
+                                                                  'poppins'),
+                                                        ),
+                                                ]),
+                                              ),
+                                            ),
+                                            Container(
+                                              child: Text(
+                                                presenceDatas['employee_in'] !=
+                                                            null &&
+                                                        presenceDatas[
+                                                                'employee_out'] !=
+                                                            null
+                                                    ? presenceDatas[
+                                                                'employee_in'][
+                                                            'datetime'] +
+                                                        ' - ' +
+                                                        presenceDatas[
+                                                                'employee_out'][
+                                                            'datetime']
+                                                    : presenceDatas[
+                                                                'employee_in'] !=
+                                                            null
+                                                        ? presenceDatas[
+                                                                    'employee_in']
+                                                                ['datetime'] +
+                                                            ' | -- : --'
+                                                        : presenceDatas[
+                                                                    'employee_out'] !=
+                                                                null
+                                                            ? ' | -- : --' +
+                                                                presenceDatas[
+                                                                        'employee_out']
+                                                                    ['datetime']
+                                                            : '-- : --',
+                                                style: TextStyle(
+                                                    fontFamily: 'poppins',
+                                                    fontSize: 36,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ),
+                                            Container(
+                                              child: Text(
+                                                tanggal,
+                                                style: TextStyle(
+                                                    fontFamily: 'poppins',
+                                                    fontSize: 14,
+                                                    fontWeight:
+                                                        FontWeight.normal),
+                                              ),
+                                            ),
+                                            Container(
+                                              child: Row(
+                                                children: [
+                                                  Expanded(
+                                                    flex: 6,
+                                                    child: Container(
+                                                      padding:
+                                                          EdgeInsets.all(10),
+                                                      height: 70,
+                                                      child: ProgressButton(
+                                                        color: _firstMenu ==
+                                                                'jam_masuk'
+                                                            ? Color.fromRGBO(
+                                                                0, 186, 242, 1)
+                                                            : Colors.grey,
+                                                        onPressed:
+                                                            (AnimationController
+                                                                controller) async {
+                                                          // httpJob(controller);
+                                                          setState(() {
+                                                            _firstMenu =
+                                                                'jam_masuk';
+                                                            _getAddressFromLatLng(
+                                                                presenceDatas[
+                                                                        'employee_in']
+                                                                    [
+                                                                    'longitude'],
+                                                                presenceDatas[
+                                                                        'employee_in']
+                                                                    [
+                                                                    'latitude']);
+                                                          });
+                                                        },
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    20)),
+                                                        strokeWidth: 2,
+                                                        child: Text(
+                                                          "Jam Masuk",
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontSize: 14,
+                                                              fontFamily:
+                                                                  'poppins'),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    flex: 6,
+                                                    child: Container(
+                                                      padding:
+                                                          EdgeInsets.all(10),
+                                                      height: 70,
+                                                      child: ProgressButton(
+                                                        color: _firstMenu ==
+                                                                'jam_pulang'
+                                                            ? Color.fromRGBO(
+                                                                0, 186, 242, 1)
+                                                            : Colors.grey,
+                                                        onPressed:
+                                                            (AnimationController
+                                                                controller) async {
+                                                          // httpJob(controller);
+                                                          setState(() {
+                                                            _firstMenu =
+                                                                'jam_pulang';
+                                                            _getAddressFromLatLng(
+                                                                presenceDatas[
+                                                                        'employee_out']
+                                                                    [
+                                                                    'longitude'],
+                                                                presenceDatas[
+                                                                        'employee_out']
+                                                                    [
+                                                                    'latitude']);
+                                                          });
+                                                        },
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    20)),
+                                                        strokeWidth: 2,
+                                                        child: Text(
+                                                          "Jam Pulang",
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontSize: 14,
+                                                              fontFamily:
+                                                                  'poppins'),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 6,
-                                    child: Container(
-                                      padding: EdgeInsets.all(10),
-                                      height: 70,
-                                      child: ProgressButton(
-                                        color: _firstMenu == 'jam_pulang'
-                                            ? Color.fromRGBO(0, 186, 242, 1)
-                                            : Colors.grey,
-                                        onPressed: (AnimationController
-                                            controller) async {
-                                          // httpJob(controller);
-                                          setState(() {
-                                            _firstMenu = 'jam_pulang';
-                                          });
-                                        },
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(20)),
-                                        strokeWidth: 2,
-                                        child: Text(
-                                          "Jam Pulang",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14,
-                                              fontFamily: 'poppins'),
-                                        ),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(15),
+                                        border: Border.all(
+                                            color: Color.fromARGB(
+                                                255, 228, 228, 228)),
                                       ),
                                     ),
                                   ),

@@ -704,7 +704,6 @@ class _HadirState extends State<Hadir> {
     };
     var uri = Uri.parse(KEY.BASE_URL + "v1/presence");
     var length = await img.length();
-    print(img);
     http.MultipartRequest request = new http.MultipartRequest('POST', uri)
       ..headers.addAll(headers)
       ..fields['longitude'] = "${_long}"
@@ -716,7 +715,6 @@ class _HadirState extends State<Hadir> {
       );
     var respons = await http.Response.fromStream(await request.send());
     var jsonObject = json.decode(respons.body);
-    print(jsonObject);
 
     if (respons.statusCode == 200) {
       _isLoading = false;

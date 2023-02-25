@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
+import 'package:klocalizations_flutter/klocalizations_flutter.dart';
+
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,6 +22,17 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Splash Screen',
+      localizationsDelegates: [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale(
+            'id',
+          ), // English, no country code
+        ],
+
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),

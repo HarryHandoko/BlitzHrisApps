@@ -45,7 +45,7 @@ dependencies:
   geocoding: ^2.0.4
   geocoder: ^0.2.1
   progress_state_button: ^1.0.4
-  intl: ^0.18.0
+  intl: ^0.17.0
   badges: ^2.0.3
   crop: ^0.5.4
   crop_your_image: ^0.7.3
@@ -54,6 +54,11 @@ dependencies:
   skeletons: ^0.0.3
   shimmer: ^2.0.0
   fancy_shimmer_image: ^2.0.2
+  carousel_slider: ^4.2.1
+  flutter_screenutil: ^5.6.1
+  smooth_page_indicator: ^1.0.1
+  klocalizations_flutter: ^0.0.8
+  flutter_html: ^0.11.1
 
 dev_dependencies:
   flutter_test:

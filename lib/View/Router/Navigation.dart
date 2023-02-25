@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
 
+import 'package:blitz_hris/View/Page/Berita.dart';
 import 'package:blitz_hris/View/Page/Home.dart';
 import 'package:blitz_hris/View/Page/Profile.dart';
 import 'package:blitz_hris/View/Page/Riwayat.dart';
@@ -36,6 +37,9 @@ class _NavigationState extends State<Navigation> {
       } else if (_currentPage == 2) {
         currentScreen = Profile();
         currentTab = 2;
+      } else if (_currentPage == 3) {
+        currentScreen = Berita();
+        currentTab = 3;
       }
     });
     super.initState();
@@ -50,6 +54,8 @@ class _NavigationState extends State<Navigation> {
         currentScreen = Riwayat();
       } else if (_currentPage == 2) {
         currentScreen = Profile();
+      } else if (_currentPage == 3) {
+        currentScreen = Berita();
       }
     });
   }
@@ -226,7 +232,7 @@ class _NavigationState extends State<Navigation> {
                                         minWidth: 40,
                                         onPressed: () {
                                           setState(() {
-                                            currentScreen = NotFoundPage();
+                                            currentScreen = Berita();
                                             currentTab = 3;
                                           });
                                         },

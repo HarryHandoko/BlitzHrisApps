@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:badges/badges.dart';
+import 'package:blitz_hris/View/Components/News.dart';
 import 'package:blitz_hris/View/Components/Notifications.dart';
 import 'package:blitz_hris/View/Home/Hadir.dart';
 import 'package:blitz_hris/View/Home/HasilAbsensi.dart';
@@ -25,6 +26,8 @@ import 'package:intl/intl.dart';
 import '../../Config/Api.dart';
 import '../Auth/Auth.dart';
 import '../Router/Navigation.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 enum att { hadir, izin, sakit, tidakhadir }
 
@@ -126,34 +129,53 @@ class _HomeState extends State<Home> {
     return "Success";
   }
 
+  List datablog = [];
+  Future news() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var response = await http
+        .get(Uri.parse(Uri.encodeFull(KEY.BASE_URL + 'v1/news/0')), headers: {
+      "Accept": "application/json",
+      "Authorization": "Bearer ${prefs.getString('token')}",
+    });
+
+    setState(() {
+      var converDataToJson = json.decode(response.body);
+      datablog = converDataToJson['data'];
+    });
+
+    return "Success";
+  }
+
   void initState() {
     super.initState();
     getVerifToken().whenComplete(() {
-      getHistory().whenComplete(() {
-        getProfile().whenComplete(() {
-          getAbsen().whenComplete(() {
-            setState(() {
-              if (verif == '200') {
-                loading_s = true;
-                _controller = ScrollController();
-                _controller.addListener(_scrollListener);
-              } else {
-                setState(() async {
-                  SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
-                  prefs.remove('name');
-                  prefs.remove('avatar');
-                  prefs.remove('token');
-                  loading_s = false;
-                  Future.delayed(const Duration(seconds: 1), () {
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) => Auth()),
-                        (Route<dynamic> route) => false);
+      news().whenComplete(() {
+        getHistory().whenComplete(() {
+          getProfile().whenComplete(() {
+            getAbsen().whenComplete(() {
+              setState(() {
+                if (verif == '200') {
+                  loading_s = true;
+                  _controller = ScrollController();
+                  _controller.addListener(_scrollListener);
+                } else {
+                  setState(() async {
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    prefs.remove('name');
+                    prefs.remove('avatar');
+                    prefs.remove('token');
+                    loading_s = false;
+                    Future.delayed(const Duration(seconds: 1), () {
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) => Auth()),
+                          (Route<dynamic> route) => false);
+                    });
                   });
-                });
-              }
+                }
+              });
             });
           });
         });
@@ -171,6 +193,54 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    final controller = PageController(viewportFraction: 0.8, keepPage: true);
+    final pages = List.generate(
+        datablog.length,
+        (index) => Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                color: Colors.grey.shade300,
+              ),
+              margin: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              child: Container(
+                height: 120,
+                child: Center(
+                  child: CachedNetworkImage(
+                    imageUrl: KEY.BASE_DIRECTORY +
+                        '/storage/images/news/' +
+                        datablog[index]['cover'],
+                    imageBuilder: (context, imageProvider) => Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        image: DecorationImage(
+                          image: imageProvider,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    placeholder: (context, url) => new Container(
+                      height: MediaQuery.of(context).size.height,
+                      width: MediaQuery.of(context).size.width,
+                      child: const Center(
+                        child: SpinKitFadingCircle(
+                          color: Colors.grey,
+                          size: 30.0,
+                        ),
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => new Icon(Icons.error),
+                  ),
+                ),
+              ),
+            ));
+    final colors = const [
+      Colors.red,
+      Colors.green,
+      Colors.greenAccent,
+      Colors.amberAccent,
+      Colors.blue,
+      Colors.amber,
+    ];
     if (!loading_s) {
       return Scaffold(
         backgroundColor: Colors.white,
@@ -626,248 +696,311 @@ class _HomeState extends State<Home> {
                             ),
                             //nav absensi
 
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  child: //body
-                                      ListView.builder(
-                                          controller: _controller,
-                                          shrinkWrap: true,
-                                          itemCount: dataHistory.length,
-                                          itemBuilder: (context, index) {
-                                            return Container(
-                                              decoration: BoxDecoration(),
-                                              child: Column(
+                            Container(
+                              margin: EdgeInsets.all(0),
+                              child: //body
+                                  ListView.builder(
+                                      controller: _controller,
+                                      shrinkWrap: true,
+                                      itemCount: dataHistory.length,
+                                      itemBuilder: (context, index) {
+                                        return Container(
+                                          decoration: BoxDecoration(),
+                                          child: Column(
+                                            children: [
+                                              Column(
                                                 children: [
-                                                  Column(
-                                                    children: [
-                                                      Container(
-                                                        child: Container(
-                                                          margin:
-                                                              EdgeInsets.only(
-                                                                  bottom: 10),
-                                                          child: Row(
-                                                            children: [
-                                                              Expanded(
-                                                                flex: 1,
-                                                                child:
-                                                                    Container(
-                                                                  height: 70,
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    color: dataHistory[index]['presence'] ==
-                                                                            'Hadir'
-                                                                        ? Color.fromRGBO(
+                                                  Container(
+                                                    child: Container(
+                                                      margin: EdgeInsets.only(
+                                                          bottom: 10),
+                                                      child: Row(
+                                                        children: [
+                                                          Expanded(
+                                                            flex: 1,
+                                                            child: Container(
+                                                              height: 70,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: dataHistory[index]
+                                                                            [
+                                                                            'presence'] ==
+                                                                        'Hadir'
+                                                                    ? Color
+                                                                        .fromRGBO(
                                                                             0,
                                                                             186,
                                                                             255,
                                                                             1)
-                                                                        : dataHistory[index]['presence'] ==
-                                                                                'Izin'
-                                                                            ? Colors.orange
-                                                                            : Colors.red,
-                                                                    borderRadius: BorderRadius.only(
-                                                                        topLeft:
-                                                                            Radius.circular(
-                                                                                10),
-                                                                        bottomLeft:
-                                                                            Radius.circular(10)),
-                                                                  ),
-                                                                ),
+                                                                    : dataHistory[index]['presence'] ==
+                                                                            'Izin'
+                                                                        ? Colors
+                                                                            .orange
+                                                                        : Colors
+                                                                            .red,
+                                                                borderRadius: BorderRadius.only(
+                                                                    topLeft: Radius
+                                                                        .circular(
+                                                                            10),
+                                                                    bottomLeft:
+                                                                        Radius.circular(
+                                                                            10)),
                                                               ),
-                                                              Expanded(
-                                                                flex: 2,
-                                                                child:
-                                                                    Container(
-                                                                  child: Column(
-                                                                    children: [
-                                                                      Text(
-                                                                        "${dataHistory[index]['month']}",
-                                                                        style:
-                                                                            TextStyle(
-                                                                          fontSize:
-                                                                              15,
-                                                                          color:
-                                                                              Colors.blue,
-                                                                          fontFamily:
-                                                                              'poppins',
-                                                                        ),
-                                                                      ),
-                                                                      Text(
-                                                                        '${dataHistory[index]['tanggal']}',
-                                                                        style:
-                                                                            TextStyle(
-                                                                          fontSize:
-                                                                              20,
-                                                                          color:
-                                                                              Colors.blue,
-                                                                          fontFamily:
-                                                                              'poppins',
-                                                                          fontWeight:
-                                                                              FontWeight.bold,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              Expanded(
-                                                                flex: 5,
-                                                                child:
-                                                                    Container(
-                                                                  child: Text(
-                                                                    dataHistory[index]['presence'] ==
-                                                                            'Hadir'
-                                                                        ? '${dataHistory[index]['employee_in'] == null ? '--:--' : dataHistory[index]['employee_in']['datetime']} - ${dataHistory[index]['employee_out'] == null ? '--:--' : dataHistory[index]['employee_out']['datetime']}'
-                                                                        : '',
+                                                            ),
+                                                          ),
+                                                          Expanded(
+                                                            flex: 2,
+                                                            child: Container(
+                                                              child: Column(
+                                                                children: [
+                                                                  Text(
+                                                                    "${dataHistory[index]['month']}",
                                                                     style:
                                                                         TextStyle(
                                                                       fontSize:
-                                                                          12,
+                                                                          15,
                                                                       color: Colors
-                                                                          .black,
+                                                                          .blue,
                                                                       fontFamily:
                                                                           'poppins',
                                                                     ),
                                                                   ),
-                                                                ),
+                                                                  Text(
+                                                                    '${dataHistory[index]['tanggal']}',
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          20,
+                                                                      color: Colors
+                                                                          .blue,
+                                                                      fontFamily:
+                                                                          'poppins',
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                    ),
+                                                                  ),
+                                                                ],
                                                               ),
-                                                              Expanded(
-                                                                flex: dataHistory[index]
+                                                            ),
+                                                          ),
+                                                          Expanded(
+                                                            flex: 5,
+                                                            child: Container(
+                                                              child: Text(
+                                                                dataHistory[index]
                                                                             [
                                                                             'presence'] ==
-                                                                        'Tidak Hadir'
-                                                                    ? 4
-                                                                    : 2,
-                                                                child:
-                                                                    Container(
-                                                                  width: 1,
-                                                                  child:
-                                                                      TextButton(
-                                                                    style: TextButton
-                                                                        .styleFrom(
-                                                                      backgroundColor: dataHistory[index]['presence'] ==
-                                                                              'Hadir'
-                                                                          ? Color.fromRGBO(
-                                                                              0,
-                                                                              186,
-                                                                              255,
-                                                                              1)
-                                                                          : dataHistory[index]['presence'] == 'Izin'
-                                                                              ? Colors.orange
-                                                                              : Colors.red,
-                                                                    ),
-                                                                    onPressed:
-                                                                        null,
-                                                                    child: Text(
-                                                                      "${dataHistory[index]['presence']}",
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            10,
-                                                                        fontFamily:
-                                                                            'poppins',
-                                                                        color: Colors
-                                                                            .white,
-                                                                      ),
-                                                                    ),
+                                                                        'Hadir'
+                                                                    ? '${dataHistory[index]['employee_in'] == null ? '--:--' : dataHistory[index]['employee_in']['datetime']} - ${dataHistory[index]['employee_out'] == null ? '--:--' : dataHistory[index]['employee_out']['datetime']}'
+                                                                    : '',
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize: 12,
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontFamily:
+                                                                      'poppins',
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Expanded(
+                                                            flex: dataHistory[
+                                                                            index]
+                                                                        [
+                                                                        'presence'] ==
+                                                                    'Tidak Hadir'
+                                                                ? 4
+                                                                : 2,
+                                                            child: Container(
+                                                              width: 1,
+                                                              child: TextButton(
+                                                                style: TextButton
+                                                                    .styleFrom(
+                                                                  backgroundColor: dataHistory[index][
+                                                                              'presence'] ==
+                                                                          'Hadir'
+                                                                      ? Color.fromRGBO(
+                                                                          0,
+                                                                          186,
+                                                                          255,
+                                                                          1)
+                                                                      : dataHistory[index]['presence'] ==
+                                                                              'Izin'
+                                                                          ? Colors
+                                                                              .orange
+                                                                          : Colors
+                                                                              .red,
+                                                                ),
+                                                                onPressed: null,
+                                                                child: Text(
+                                                                  "${dataHistory[index]['presence']}",
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontSize:
+                                                                        10,
+                                                                    fontFamily:
+                                                                        'poppins',
+                                                                    color: Colors
+                                                                        .white,
                                                                   ),
                                                                 ),
                                                               ),
-                                                              dataHistory[index]
-                                                                          [
-                                                                          'presence'] ==
-                                                                      'Hadir'
-                                                                  ? Expanded(
-                                                                      flex: 2,
-                                                                      child:
-                                                                          GestureDetector(
-                                                                        onTap:
-                                                                            () {
-                                                                          Navigator.of(context)
-                                                                              .push(
-                                                                            PageRouteBuilder(
-                                                                              pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
-                                                                                return HasilRiwayat(
-                                                                                  datte: dataHistory[index]['date'],
-                                                                                );
-                                                                              },
-                                                                            ),
-                                                                          );
-                                                                        },
-                                                                        child:
-                                                                            Container(
-                                                                          child:
-                                                                              Icon(FeatherIcons.chevronRight),
+                                                            ),
+                                                          ),
+                                                          dataHistory[index][
+                                                                      'presence'] ==
+                                                                  'Hadir'
+                                                              ? Expanded(
+                                                                  flex: 2,
+                                                                  child:
+                                                                      GestureDetector(
+                                                                    onTap: () {
+                                                                      Navigator.of(
+                                                                              context)
+                                                                          .push(
+                                                                        PageRouteBuilder(
+                                                                          pageBuilder: (BuildContext context,
+                                                                              Animation<double> animation,
+                                                                              Animation<double> secondaryAnimation) {
+                                                                            return HasilRiwayat(
+                                                                              datte: dataHistory[index]['date'],
+                                                                            );
+                                                                          },
                                                                         ),
-                                                                      ))
-                                                                  : Expanded(
-                                                                      flex: 2,
-                                                                      child:
-                                                                          Container(
-                                                                        child: Icon(
-                                                                            FeatherIcons.chevronRight),
-                                                                      ),
+                                                                      );
+                                                                    },
+                                                                    child:
+                                                                        Container(
+                                                                      child: Icon(
+                                                                          FeatherIcons
+                                                                              .chevronRight),
                                                                     ),
-                                                            ],
-                                                          ),
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            boxShadow: [
-                                                              BoxShadow(
-                                                                color: Color
-                                                                    .fromARGB(
-                                                                        255,
-                                                                        241,
-                                                                        241,
-                                                                        241),
-                                                                offset:
-                                                                    const Offset(
-                                                                  5.0,
-                                                                  5.0,
+                                                                  ))
+                                                              : Expanded(
+                                                                  flex: 2,
+                                                                  child:
+                                                                      Container(
+                                                                    child: Icon(
+                                                                        FeatherIcons
+                                                                            .chevronRight),
+                                                                  ),
                                                                 ),
-                                                                blurRadius:
-                                                                    15.0,
-                                                                spreadRadius:
-                                                                    1.0,
-                                                              ), //BoxShadow
-                                                              BoxShadow(
-                                                                color: Colors
-                                                                    .white,
-                                                                offset:
-                                                                    const Offset(
-                                                                        0.0,
-                                                                        0.0),
-                                                                blurRadius: 0.0,
-                                                                spreadRadius:
-                                                                    0.0,
-                                                              ),
-                                                            ],
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        15),
-                                                            border: Border.all(
-                                                                color: Color
-                                                                    .fromARGB(
-                                                                        255,
-                                                                        240,
-                                                                        240,
-                                                                        240)),
-                                                          ),
-                                                        ),
+                                                        ],
                                                       ),
-                                                    ],
+                                                      decoration: BoxDecoration(
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color:
+                                                                Color.fromARGB(
+                                                                    255,
+                                                                    241,
+                                                                    241,
+                                                                    241),
+                                                            offset:
+                                                                const Offset(
+                                                              5.0,
+                                                              5.0,
+                                                            ),
+                                                            blurRadius: 15.0,
+                                                            spreadRadius: 1.0,
+                                                          ), //BoxShadow
+                                                          BoxShadow(
+                                                            color: Colors.white,
+                                                            offset:
+                                                                const Offset(
+                                                                    0.0, 0.0),
+                                                            blurRadius: 0.0,
+                                                            spreadRadius: 0.0,
+                                                          ),
+                                                        ],
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(15),
+                                                        border: Border.all(
+                                                            color:
+                                                                Color.fromARGB(
+                                                                    255,
+                                                                    240,
+                                                                    240,
+                                                                    240)),
+                                                      ),
+                                                    ),
                                                   ),
                                                 ],
                                               ),
-                                            );
-                                          }),
-                                )
-                              ],
+                                            ],
+                                          ),
+                                        );
+                                      }),
                             ),
+                            Container(
+                              margin: EdgeInsets.only(top: 0, bottom: 5),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      'Info & Berita',
+                                      style: TextStyle(
+                                          fontFamily: 'poppins', fontSize: 15),
+                                    ),
+                                  ),
+                                  Expanded(
+                                      child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                        PageRouteBuilder(
+                                          pageBuilder: (BuildContext context,
+                                              Animation<double> animation,
+                                              Animation<double>
+                                                  secondaryAnimation) {
+                                            return Navigation(
+                                              tab: 3,
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    },
+                                    child: Text(
+                                      'Lihat semuanya',
+                                      textAlign: TextAlign.right,
+                                      style: TextStyle(
+                                        fontFamily: 'poppins',
+                                        fontSize: 12,
+                                        color: Color.fromRGBO(0, 186, 242, 1),
+                                      ),
+                                    ),
+                                  )),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              height: 180,
+                              child: PageView.builder(
+                                controller: controller,
+                                // itemCount: pages.length,
+                                itemBuilder: (_, index) {
+                                  return pages[index % pages.length];
+                                },
+                              ),
+                            ),
+
+                            SizedBox(height: 5),
+
+                            SmoothPageIndicator(
+                              controller: controller,
+                              count: pages.length,
+                              effect: WormEffect(
+                                dotHeight: 16,
+                                dotWidth: 16,
+                                type: WormType.thin,
+                                // strokeWidth: 5,
+                              ),
+                            ),
+
+                            SizedBox(height: 80),
                           ],
                         ),
                       ),

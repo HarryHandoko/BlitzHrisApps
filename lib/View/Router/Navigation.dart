@@ -15,6 +15,8 @@ import 'package:double_back_to_close/double_back_to_close.dart';
 import 'package:bottom_bar/bottom_bar.dart';
 
 class Navigation extends StatefulWidget {
+  int? tab = 0;
+  Navigation({this.tab = 0});
   @override
   State<Navigation> createState() => _NavigationState();
 }
@@ -23,6 +25,19 @@ class _NavigationState extends State<Navigation> {
   int _currentPage = 0;
   final _pageController = PageController();
   void initState() {
+    setState(() {
+      _currentPage = this.widget.tab!;
+      if (_currentPage == 0) {
+        currentScreen = Home();
+        currentTab = 0;
+      } else if (_currentPage == 1) {
+        currentScreen = Riwayat();
+        currentTab = 1;
+      } else if (_currentPage == 2) {
+        currentScreen = Profile();
+        currentTab = 2;
+      }
+    });
     super.initState();
   }
 
@@ -143,7 +158,7 @@ class _NavigationState extends State<Navigation> {
                                         minWidth: 40,
                                         onPressed: () {
                                           setState(() {
-                                            currentScreen = NotFoundPage();
+                                            currentScreen = Riwayat();
                                             currentTab = 1;
                                           });
                                         },

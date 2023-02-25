@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:progress_indicator_button/progress_button.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -34,6 +35,7 @@ class _RiwayatState extends State<Riwayat> {
   bool loading_s = false;
   bool _isLoading = false;
   File? imageFile;
+  int tab = 0;
 
   Future getProfile() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -138,6 +140,129 @@ class _RiwayatState extends State<Riwayat> {
                             left: 20, right: 20, top: 60, bottom: 100),
                         child: Column(
                           children: [
+                            Container(
+                              padding: EdgeInsets.only(
+                                  left: 5, right: 5, bottom: 30),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    flex: 1,
+                                    child: Container(
+                                      margin: EdgeInsets.only(top: 5),
+                                      alignment: Alignment.topLeft,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          Navigator.pushAndRemoveUntil(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        Navigation(),
+                                              ),
+                                              (Route<dynamic> route) => false);
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.all(0),
+                                          margin: EdgeInsets.only(top: 10),
+                                          alignment: Alignment.topLeft,
+                                          child: Icon(
+                                            FontAwesomeIcons.circleChevronLeft,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 11,
+                                    child: Container(
+                                      padding: EdgeInsets.only(top: 10),
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        'Riwayat Absensi',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontFamily: 'poppins',
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            Container(
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          tab = 0;
+                                        });
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.all(15),
+                                        child: Text(
+                                          'Riwayat Bulan Ini',
+                                          style: TextStyle(
+                                            color: tab == 0
+                                                ? Colors.white
+                                                : Colors.black,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: tab == 0
+                                              ? Color.fromARGB(
+                                                  255, 79, 172, 247)
+                                              : Color.fromARGB(
+                                                  255, 240, 241, 241),
+                                          borderRadius:
+                                              BorderRadius.circular(100),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          tab = 1;
+                                        });
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.all(15),
+                                        child: Text(
+                                          'Riwayat Keseluruhan',
+                                          style: TextStyle(
+                                            color: tab == 1
+                                                ? Colors.white
+                                                : Colors.black,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: tab == 1
+                                              ? Color.fromARGB(
+                                                  255, 79, 172, 247)
+                                              : Color.fromARGB(
+                                                  255, 240, 241, 241),
+                                          borderRadius:
+                                              BorderRadius.circular(100),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              decoration: BoxDecoration(
+                                color: Color.fromARGB(255, 240, 241, 241),
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                            ),
                             Container(
                               alignment: Alignment.center,
                               margin: EdgeInsets.only(top: 100, left: 20),

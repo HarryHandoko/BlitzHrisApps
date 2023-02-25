@@ -6,7 +6,9 @@ import 'package:badges/badges.dart';
 import 'package:blitz_hris/View/Components/Notifications.dart';
 import 'package:blitz_hris/View/Home/Hadir.dart';
 import 'package:blitz_hris/View/Home/HasilAbsensi.dart';
+import 'package:blitz_hris/View/Home/HasilRiwayat.dart';
 import 'package:blitz_hris/View/Page/Profile.dart';
+import 'package:blitz_hris/View/Page/Riwayat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
@@ -594,6 +596,21 @@ class _HomeState extends State<Home> {
                                     ),
                                   ),
                                   Expanded(
+                                      child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                        PageRouteBuilder(
+                                          pageBuilder: (BuildContext context,
+                                              Animation<double> animation,
+                                              Animation<double>
+                                                  secondaryAnimation) {
+                                            return Navigation(
+                                              tab: 1,
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    },
                                     child: Text(
                                       'Lihat semuanya',
                                       textAlign: TextAlign.right,
@@ -603,7 +620,7 @@ class _HomeState extends State<Home> {
                                         color: Color.fromRGBO(0, 186, 242, 1),
                                       ),
                                     ),
-                                  ),
+                                  )),
                                 ],
                               ),
                             ),
@@ -759,15 +776,41 @@ class _HomeState extends State<Home> {
                                                                   ),
                                                                 ),
                                                               ),
-                                                              Expanded(
-                                                                flex: 2,
-                                                                child:
-                                                                    Container(
-                                                                  child: Icon(
-                                                                      FeatherIcons
-                                                                          .chevronRight),
-                                                                ),
-                                                              ),
+                                                              dataHistory[index]
+                                                                          [
+                                                                          'presence'] ==
+                                                                      'Hadir'
+                                                                  ? Expanded(
+                                                                      flex: 2,
+                                                                      child:
+                                                                          GestureDetector(
+                                                                        onTap:
+                                                                            () {
+                                                                          Navigator.of(context)
+                                                                              .push(
+                                                                            PageRouteBuilder(
+                                                                              pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+                                                                                return HasilRiwayat(
+                                                                                  datte: dataHistory[index]['date'],
+                                                                                );
+                                                                              },
+                                                                            ),
+                                                                          );
+                                                                        },
+                                                                        child:
+                                                                            Container(
+                                                                          child:
+                                                                              Icon(FeatherIcons.chevronRight),
+                                                                        ),
+                                                                      ))
+                                                                  : Expanded(
+                                                                      flex: 2,
+                                                                      child:
+                                                                          Container(
+                                                                        child: Icon(
+                                                                            FeatherIcons.chevronRight),
+                                                                      ),
+                                                                    ),
                                                             ],
                                                           ),
                                                           decoration:

@@ -29,12 +29,14 @@ import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 
 import '../../Config/Api.dart';
 
-class HasilAbsensi extends StatefulWidget {
+class HasilRiwayat extends StatefulWidget {
+  String datte;
+  HasilRiwayat({required this.datte});
   @override
-  State<HasilAbsensi> createState() => _HasilAbsensiState();
+  State<HasilRiwayat> createState() => _HasilRiwayatState();
 }
 
-class _HasilAbsensiState extends State<HasilAbsensi> {
+class _HasilRiwayatState extends State<HasilRiwayat> {
   String? verif;
   String? name;
   String? token;
@@ -69,11 +71,13 @@ class _HasilAbsensiState extends State<HasilAbsensi> {
   var presenceData;
   Future getAbsen() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    var response = await http
-        .get(Uri.parse(Uri.encodeFull(KEY.BASE_URL + 'v1/shift')), headers: {
-      "Accept": "application/json",
-      "Authorization": "Bearer ${prefs.getString('token')}",
-    });
+    var response = await http.get(
+        Uri.parse(Uri.encodeFull(
+            KEY.BASE_URL + 'v1/presence-history/detail/' + this.widget.datte)),
+        headers: {
+          "Accept": "application/json",
+          "Authorization": "Bearer ${prefs.getString('token')}",
+        });
 
     setState(() {
       var jsosn = json.decode(response.body);

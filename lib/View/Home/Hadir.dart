@@ -29,6 +29,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../Config/Api.dart';
+import 'package:shimmer/shimmer.dart';
 
 class Hadir extends StatefulWidget {
   @override
@@ -344,7 +345,6 @@ class _HadirState extends State<Hadir> {
                                 ],
                               ),
                             ),
-
                             Container(
                               margin:
                                   EdgeInsets.only(top: 0, left: 20, right: 20),
@@ -394,51 +394,6 @@ class _HadirState extends State<Hadir> {
                                 ],
                               ),
                             ),
-                            // Container(
-                            //   margin:
-                            //       EdgeInsets.only(top: 0, left: 20, right: 20),
-                            //   child: Column(
-                            //     children: [
-                            //       Container(
-                            //         padding: EdgeInsets.all(3),
-                            //         margin: EdgeInsets.only(top: 10),
-                            //         alignment: Alignment.centerLeft,
-                            //         child: Text(
-                            //           'Keterangan (opsional)',
-                            //           style: TextStyle(
-                            //             fontSize: 13,
-                            //             fontWeight: FontWeight.bold,
-                            //             fontFamily: 'poppins',
-                            //           ),
-                            //         ),
-                            //       ),
-                            //       Container(
-                            //         decoration: BoxDecoration(
-                            //           borderRadius: BorderRadius.circular(12),
-                            //           border: Border.all(color: Colors.grey),
-                            //         ),
-                            //         child: TextFormField(
-                            //           controller: keterangan,
-                            //           onChanged: (vale) {},
-                            //           autocorrect: false,
-                            //           enableSuggestions: false,
-                            //           style: TextStyle(color: Colors.black),
-                            //           decoration: InputDecoration(
-                            //             border: InputBorder.none,
-                            //             prefixIcon: Icon(
-                            //               FeatherIcons.edit,
-                            //               color: Color.fromRGBO(0, 186, 242, 1),
-                            //             ),
-                            //             hintText: 'Keterangan (opsional)',
-                            //             hintStyle:
-                            //                 TextStyle(color: Colors.grey),
-                            //           ),
-                            //         ),
-                            //       ),
-                            //     ],
-                            //   ),
-                            // ),
-
                             Container(
                               alignment: Alignment.centerLeft,
                               margin: EdgeInsets.only(
@@ -485,27 +440,45 @@ class _HadirState extends State<Hadir> {
                                       ),
                                     );
                                   },
-                                  child: imageAbsen == null
-                                      ? Container(
-                                          alignment: Alignment.centerLeft,
-                                          margin:
-                                              EdgeInsets.only(top: 0, left: 20),
-                                          width: 120,
-                                          child: const Image(
-                                            alignment: Alignment.centerLeft,
-                                            image: AssetImage(
-                                                'assets/image/no-image.png'),
-                                            fit: BoxFit.cover,
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        margin: EdgeInsets.all(5),
+                                        child: SizedBox(
+                                          height: 140,
+                                          width: 140,
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(16),
+                                            child: imageAbsen == null
+                                                ? Container(
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    margin: EdgeInsets.only(
+                                                        top: 0, left: 20),
+                                                    width: 120,
+                                                    child: const Image(
+                                                      alignment:
+                                                          Alignment.centerLeft,
+                                                      image: AssetImage(
+                                                          'assets/image/no-image.png'),
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  )
+                                                : Container(
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    margin: EdgeInsets.only(
+                                                        top: 0, left: 20),
+                                                    width: 120,
+                                                    child: Image.file(File(
+                                                        '${imageAbsen!.replaceAll("File: ", "").replaceAll("'", "")}')),
+                                                  ),
                                           ),
-                                        )
-                                      : Container(
-                                          alignment: Alignment.centerLeft,
-                                          margin:
-                                              EdgeInsets.only(top: 0, left: 20),
-                                          width: 120,
-                                          child: Image.file(File(
-                                              '${imageAbsen!.replaceAll("File: ", "").replaceAll("'", "")}')),
                                         ),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),

@@ -51,6 +51,9 @@ dependencies:
   crop_your_image: ^0.7.3
   salomon_bottom_bar: ^3.3.1
   bottom_bar: ^2.0.3
+  skeletons: ^0.0.3
+  shimmer: ^2.0.0
+  fancy_shimmer_image: ^2.0.2
 
 dev_dependencies:
   flutter_test:
